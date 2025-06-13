@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // ===== Configurações =====
     // URLs base para as simulações PHET
-    const phetBaseUrl = 'https://phet.colorado.edu/sims/html/circuit-construction-kit-dc/latest/circuit-construction-kit-dc_pt_BR.html';
+    const phetBaseUrl = 'https://phet.colorado.edu/sims/html/circuit-construction-kit-ac-virtual-lab/latest/circuit-construction-kit-ac-virtual-lab_pt_BR.html';
     
     // Parâmetros para diferentes tipos de circuitos
     const circuitParams = {
@@ -40,35 +40,41 @@ document.addEventListener('DOMContentLoaded', function() {
         'oi': 'Olá! Como posso ajudar você com circuitos elétricos hoje?',
         'ajuda': 'Posso ajudar com dúvidas sobre circuitos em série, paralelo ou mistos. O que você gostaria de saber?',
         
-        // Circuitos em série
-        'serie': 'Em um circuito em série, os componentes são conectados sequencialmente, formando um único caminho para a corrente elétrica. A corrente é a mesma em todos os componentes, e a tensão total é a soma das tensões em cada componente.',
-        'circuito serie': 'Em um circuito em série, os componentes são conectados sequencialmente, formando um único caminho para a corrente elétrica. A corrente é a mesma em todos os componentes, e a tensão total é a soma das tensões em cada componente.',
-        'resistencia serie': 'Em um circuito em série, a resistência total é a soma das resistências individuais: Rtotal = R1 + R2 + ... + Rn',
+        // Circuitos em série (CA e CC)
+        'serie': 'Em um circuito em série, os componentes são conectados sequencialmente. A corrente é a mesma em todos os componentes, e a tensão total é a soma das tensões em cada componente. Em CA, a impedância total é a soma das impedâncias individuais.',
+        'circuito serie': 'Em um circuito em série, os componentes são conectados sequencialmente. A corrente é a mesma em todos os componentes, e a tensão total é a soma das tensões em cada componente. Em CA, a impedância total é a soma das impedâncias individuais.',
+        'resistencia serie': 'Em um circuito em série, a resistência total é a soma das resistências individuais: Rtotal = R1 + R2 + ... + Rn. Em CA, considere a impedância.',
         'corrente serie': 'Em um circuito em série, a corrente é a mesma em todos os componentes: I = I1 = I2 = ... = In',
         'tensao serie': 'Em um circuito em série, a tensão total é a soma das tensões em cada componente: Vtotal = V1 + V2 + ... + Vn',
         
-        // Circuitos em paralelo
-        'paralelo': 'Em um circuito em paralelo, os componentes são conectados em ramificações separadas, oferecendo múltiplos caminhos para a corrente. A tensão é a mesma em todos os componentes, e a corrente total é a soma das correntes em cada ramo.',
-        'circuito paralelo': 'Em um circuito em paralelo, os componentes são conectados em ramificações separadas, oferecendo múltiplos caminhos para a corrente. A tensão é a mesma em todos os componentes, e a corrente total é a soma das correntes em cada ramo.',
-        'resistencia paralelo': 'Em um circuito em paralelo, o inverso da resistência total é a soma dos inversos das resistências individuais: 1/Rtotal = 1/R1 + 1/R2 + ... + 1/Rn',
+        // Circuitos em paralelo (CA e CC)
+        'paralelo': 'Em um circuito em paralelo, os componentes são conectados em ramificações separadas, oferecendo múltiplos caminhos para a corrente. A tensão é a mesma em todos os componentes, e a corrente total é a soma das correntes em cada ramo. Em CA, o inverso da impedância total é a soma dos inversos das impedâncias individuais.',
+        'circuito paralelo': 'Em um circuito em paralelo, os componentes são conectados em ramificações separadas, oferecendo múltiplos caminhos para a corrente. A tensão é a mesma em todos os componentes, e a corrente total é a soma das correntes em cada ramo. Em CA, o inverso da impedância total é a soma dos inversos das impedâncias individuais.',
+        'resistencia paralelo': 'Em um circuito em paralelo, o inverso da resistência total é a soma dos inversos das resistências individuais: 1/Rtotal = 1/R1 + 1/R2 + ... + 1/Rn. Em CA, considere a impedância.',
         'corrente paralelo': 'Em um circuito em paralelo, a corrente total é a soma das correntes em cada ramo: Itotal = I1 + I2 + ... + In',
         'tensao paralelo': 'Em um circuito em paralelo, a tensão é a mesma em todos os componentes: V = V1 = V2 = ... = Vn',
         
-        // Circuitos mistos
-        'misto': 'Circuitos mistos combinam elementos em série e em paralelo. Para analisá-los, identifique as partes em série e em paralelo, aplique as regras específicas para cada parte e combine os resultados.',
-        'circuito misto': 'Circuitos mistos combinam elementos em série e em paralelo. Para analisá-los, identifique as partes em série e em paralelo, aplique as regras específicas para cada parte e combine os resultados.',
-        'analisar misto': 'Para analisar um circuito misto: 1) Identifique as partes em série e em paralelo, 2) Calcule as resistências equivalentes para cada parte, 3) Simplifique o circuito progressivamente, 4) Determine as grandezas elétricas em cada componente.',
+        // Circuitos mistos (CA e CC)
+        'misto': 'Circuitos mistos combinam elementos em série e em paralelo. Para analisá-los, identifique as partes em série e em paralelo, aplique as regras específicas para cada parte e combine os resultados. Em CA, utilize impedâncias para a análise.',
+        'circuito misto': 'Circuitos mistos combinam elementos em série e em paralelo. Para analisá-los, identifique as partes em série e em paralelo, aplique as regras específicas para cada parte e combine os resultados. Em CA, utilize impedâncias para a análise.',
+        'analisar misto': 'Para analisar um circuito misto: 1) Identifique as partes em série e em paralelo, 2) Calcule as resistências/impedâncias equivalentes para cada parte, 3) Simplifique o circuito progressivamente, 4) Determine as grandezas elétricas em cada componente.',
         
-        // Lei de Ohm
-        'lei de ohm': 'A Lei de Ohm estabelece que a corrente que passa por um condutor é diretamente proporcional à tensão e inversamente proporcional à resistência: I = V/R',
-        'ohm': 'A Lei de Ohm estabelece que a corrente que passa por um condutor é diretamente proporcional à tensão e inversamente proporcional à resistência: I = V/R',
+        // Lei de Ohm (CA e CC)
+        'lei de ohm': 'A Lei de Ohm estabelece que a corrente que passa por um condutor é diretamente proporcional à tensão e inversamente proporcional à resistência (em CC) ou impedância (em CA): I = V/R ou I = V/Z.',
+        'ohm': 'A Lei de Ohm estabelece que a corrente que passa por um condutor é diretamente proporcional à tensão e inversamente proporcional à resistência (em CC) ou impedância (em CA): I = V/R ou I = V/Z.',
         
-        // Componentes
-        'resistor': 'O resistor é um componente que limita o fluxo de corrente elétrica em um circuito. Sua unidade de medida é o Ohm (Ω).',
-        'capacitor': 'O capacitor é um componente que armazena energia em um campo elétrico. Sua unidade de medida é o Farad (F).',
-        'indutor': 'O indutor é um componente que armazena energia em um campo magnético. Sua unidade de medida é o Henry (H).',
-        'diodo': 'O diodo é um componente semicondutor que permite a passagem de corrente em apenas uma direção.',
-        'led': 'O LED (Light Emitting Diode) é um tipo de diodo que emite luz quando uma corrente elétrica passa por ele.',
+        // Componentes (CA e CC)
+        'resistor': 'O resistor é um componente que limita o fluxo de corrente elétrica em um circuito. Sua unidade de medida é o Ohm (Ω). Em CA, sua impedância é igual à sua resistência.',
+        'capacitor': 'O capacitor é um componente que armazena energia em um campo elétrico. Sua unidade de medida é o Farad (F). Em CA, ele apresenta reatância capacitiva (Xc), que se opõe à variação de tensão.',
+        'indutor': 'O indutor é um componente que armazena energia em um campo magnético. Sua unidade de medida é o Henry (H). Em CA, ele apresenta reatância indutiva (Xl), que se opõe à variação de corrente.',
+        
+        // Conceitos de CA
+        'corrente alternada': 'Corrente Alternada (CA) é um tipo de corrente elétrica que inverte periodicamente seu sentido, variando sua magnitude ao longo do tempo, geralmente de forma senoidal.',
+        'tensao alternada': 'Tensão Alternada (CA) é um tipo de tensão elétrica que inverte periodicamente sua polaridade, variando sua magnitude ao longo do tempo, geralmente de forma senoidal.',
+        'impedancia': 'Impedância (Z) é a oposição total que um circuito oferece à passagem de corrente alternada. É uma grandeza complexa que combina resistência e reatância, e sua unidade é o Ohm (Ω).',
+        'reatancia': 'Reatância é a oposição à corrente alternada causada por capacitores (reatância capacitiva, Xc) e indutores (reatância indutiva, Xl). É medida em Ohms (Ω).',
+        'frequencia': 'Frequência é o número de ciclos completos que uma onda de corrente ou tensão alternada realiza em um segundo. Sua unidade é o Hertz (Hz).',
+        'fasor': 'Fasor é uma representação gráfica de uma grandeza senoidal (como tensão ou corrente alternada) que permite simplificar a análise de circuitos CA, transformando equações diferenciais em equações algébricas complexas.',
         
         // Instrumentos de medição
         'multimetro': 'O multímetro é um instrumento que pode medir tensão, corrente e resistência. Na simulação, você pode usá-lo para verificar os valores em diferentes pontos do circuito.',
@@ -80,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'circuito aberto': 'Um circuito aberto ocorre quando há uma interrupção no caminho da corrente elétrica, impedindo seu fluxo. Isso pode ser causado por um componente queimado ou uma conexão solta.',
         
         // Fallback
-        'default': 'Desculpe, não tenho informações específicas sobre isso. Posso ajudar com dúvidas sobre circuitos em série, paralelo, mistos, Lei de Ohm ou componentes elétricos.'
+        'default': 'Desculpe, não tenho informações específicas sobre isso. Posso ajudar com dúvidas sobre circuitos em série, paralelo, mistos, Lei de Ohm, componentes elétricos (resistor, capacitor, indutor) ou conceitos de CA como impedância, reatância, frequência e fasores.'
     };
     
     // ===== Funções do Chatbot =====
@@ -167,31 +173,31 @@ document.addEventListener('DOMContentLoaded', function() {
         switch(type) {
             case 'serie':
                 instructions = [
-                    'Arraste uma bateria para a área de trabalho',
-                    'Adicione resistores ou lâmpadas em sequência (um após o outro)',
+                    'Arraste uma fonte de tensão CA para a área de trabalho',
+                    'Adicione resistores, capacitores ou indutores em sequência',
                     'Conecte todos os componentes em um único caminho',
-                    'Use o multímetro para medir a corrente em diferentes pontos (deve ser igual)',
-                    'Verifique a tensão em cada componente (a soma deve ser igual à tensão da bateria)'
+                    'Use o multímetro para medir a corrente e a tensão em diferentes pontos',
+                    'Observe a defasagem entre tensão e corrente em capacitores e indutores'
                 ];
                 break;
                 
             case 'paralelo':
                 instructions = [
-                    'Arraste uma bateria para a área de trabalho',
-                    'Crie múltiplos caminhos entre os terminais da bateria',
-                    'Adicione resistores ou lâmpadas em cada caminho',
+                    'Arraste uma fonte de tensão CA para a área de trabalho',
+                    'Crie múltiplos caminhos entre os terminais da fonte',
+                    'Adicione resistores, capacitores ou indutores em cada caminho',
                     'Use o multímetro para medir a tensão em cada componente (deve ser igual)',
-                    'Verifique a corrente em cada ramo (a soma deve ser igual à corrente total)'
+                    'Verifique a corrente em cada ramo e a corrente total'
                 ];
                 break;
                 
             case 'misto':
                 instructions = [
-                    'Arraste uma bateria para a área de trabalho',
+                    'Arraste uma fonte de tensão CA para a área de trabalho',
                     'Crie uma combinação de conexões em série e paralelo',
                     'Identifique as partes em série e em paralelo do circuito',
                     'Use o multímetro para analisar tensão e corrente em diferentes pontos',
-                    'Compare os valores medidos com os valores calculados teoricamente'
+                    'Compare os valores medidos com os valores calculados teoricamente, considerando impedâncias'
                 ];
                 break;
                 
