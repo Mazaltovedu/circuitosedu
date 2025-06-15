@@ -14,6 +14,9 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
+    <!-- QR Code Generator -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    
     <!-- Custom CSS -->
     <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -38,6 +41,9 @@
                             <a class="nav-link" href="#simulacoes">Simulações</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="#realidade-aumentada">Realidade Aumentada</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link" href="#material">Material Teórico</a>
                         </li>
                         <li class="nav-item">
@@ -56,90 +62,176 @@
                 <div class="col-lg-6">
                     <h1 class="display-4 fw-bold mb-4">IA e Simulações Interativas no Ensino de Circuitos Elétricos</h1>
                     <p class="lead mb-4">Uma plataforma educacional que integra simulações PHET com inteligência artificial para facilitar o aprendizado de circuitos elétricos.</p>
-                    <a href="#simulacoes" class="btn btn-primary btn-lg">Explorar Simulações</a>
+                    <a href="#simulacoes" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play me-2"></i>Explorar Simulações
+                    </a>
                 </div>
                 <div class="col-lg-6">
-                    <img src="img/circuit-hero.png" alt="Circuito Elétrico" class="img-fluid rounded shadow-lg">
+                    <div class="hero-image">
+                        <img src="img/circuit-hero.png" alt="Simulação de Circuito" class="img-fluid">
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Simulações Section -->
+    <!-- Simulações Interativas -->
     <section id="simulacoes" class="py-5">
         <div class="container">
-            <div class="row">
-                <div class="col-12 text-center mb-5">
-                    <h2 class="section-title">Simulações Interativas</h2>
-                    <p class="section-subtitle">Explore diferentes tipos de circuitos elétricos com simulações da plataforma PHET</p>
-                </div>
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Simulações Interativas</h2>
+                <p class="lead">Explore diferentes tipos de circuitos elétricos com simulações da plataforma PHET</p>
             </div>
             
             <div class="row">
                 <div class="col-lg-8">
                     <div class="simulation-container">
-                        <!-- Área da simulação PHET -->
-                        <div class="phet-container" id="phet-simulation">
-                            <iframe id="phet-iframe" src="https://phet.colorado.edu/sims/html/circuit-construction-kit-ac-virtual-lab/latest/circuit-construction-kit-ac-virtual-lab_pt_BR.html" width="100%" height="600" allowfullscreen></iframe>
+                        <iframe id="phetSimulation" 
+                                src="https://phet.colorado.edu/sims/html/circuit-construction-kit-ac/latest/circuit-construction-kit-ac_pt_BR.html" 
+                                width="100%" 
+                                height="600" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+                
+                <div class="col-lg-4">
+                    <div class="controls-panel">
+                        <h5 class="mb-3">Controles e Instruções</h5>
+                        
+                        <div class="mb-3">
+                            <label for="circuitType" class="form-label">Selecione o tipo de circuito:</label>
+                            <select class="form-select" id="circuitType">
+                                <option value="serie">Circuito em Série</option>
+                                <option value="paralelo">Circuito em Paralelo</option>
+                                <option value="misto">Circuito Misto</option>
+                            </select>
+                        </div>
+                        
+                        <div class="instructions">
+                            <h6>Instruções:</h6>
+                            <ol id="instructionsList">
+                                <li>Arraste uma fonte de tensão CA para a área de trabalho</li>
+                                <li>Adicione resistores, capacitores ou indutores em sequência</li>
+                                <li>Conecte todos os componentes em um único caminho</li>
+                                <li>Use o multímetro para medir a corrente e a tensão em diferentes pontos</li>
+                                <li>Observe a defasagem entre tensão e corrente em capacitores e indutores</li>
+                            </ol>
                         </div>
                     </div>
-                    
-                    <!-- Controles e Instruções -->
-                    <div class="controls-container mt-4">
-                        <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">Controles e Instruções</h5>
-                            </div>
-                            <div class="card-body">
-                                <div class="circuit-selector mb-3">
-                                    <label for="circuit-type" class="form-label">Selecione o tipo de circuito:</label>
-                                    <select class="form-select" id="circuit-type">
-                                        <option value="serie">Circuito em Série</option>
-                                        <option value="paralelo">Circuito em Paralelo</option>
-                                        <option value="misto">Circuito Misto</option>
-                                    </select>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Realidade Aumentada Section -->
+    <section id="realidade-aumentada" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">
+                    <i class="fas fa-cube text-primary me-3"></i>Recursos de Realidade Aumentada
+                </h2>
+                <p class="lead">Explore componentes elétricos em 3D com tecnologia de Realidade Aumentada do SENAI</p>
+                <a href="#ar-resources" class="btn btn-primary btn-lg">
+                    <i class="fas fa-mobile-alt me-2"></i>Explorar Recursos RA
+                </a>
+            </div>
+
+            <!-- Filtros -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-search"></i></span>
+                        <input type="text" class="form-control" id="searchAR" placeholder="Buscar recursos de RA...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="categoryFilter">
+                        <option value="">Todas as categorias</option>
+                        <option value="basicos">Conceitos Básicos</option>
+                        <option value="componentes">Componentes Eletrônicos</option>
+                        <option value="protecao">Proteção e Controle</option>
+                        <option value="instrumentacao">Instrumentação</option>
+                        <option value="motores">Motores e Máquinas</option>
+                        <option value="instalacoes">Instalações Elétricas</option>
+                        <option value="materiais">Materiais e Magnetismo</option>
+                        <option value="manutencao">Manutenção e Diagnóstico</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="levelFilter">
+                        <option value="">Todos os níveis</option>
+                        <option value="basico">Básico</option>
+                        <option value="intermediario">Intermediário</option>
+                        <option value="avancado">Avançado</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Recursos de RA -->
+            <div id="ar-resources" class="row" id="arResourcesContainer">
+                <!-- Os recursos serão carregados dinamicamente via JavaScript -->
+            </div>
+
+            <!-- Guia de Uso -->
+            <div class="row mt-5">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Como usar os recursos de Realidade Aumentada
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h6>Requisitos:</h6>
+                                    <ul>
+                                        <li>Smartphone ou tablet com Android 7.0+ ou iOS 11.0+</li>
+                                        <li>Câmera traseira funcional</li>
+                                        <li>Conexão com internet para download</li>
+                                        <li>Espaço livre de aproximadamente 50MB por aplicativo</li>
+                                    </ul>
                                 </div>
-                                
-                                <div id="instructions" class="instructions">
-                                    <h6>Instruções:</h6>
-                                    <ol id="instruction-list">
-                                        <li>Arraste componentes da caixa de ferramentas para a área de trabalho</li>
-                                        <li>Conecte os componentes para formar um circuito</li>
-                                        <li>Use o multímetro para medir tensão e corrente</li>
-                                        <li>Experimente diferentes configurações e observe os resultados</li>
+                                <div class="col-md-6">
+                                    <h6>Como usar:</h6>
+                                    <ol>
+                                        <li>Escaneie o QR Code ou clique no link do seu dispositivo</li>
+                                        <li>Baixe e instale o aplicativo</li>
+                                        <li>Abra o aplicativo e permita o acesso à câmera</li>
+                                        <li>Aponte a câmera para uma superfície plana</li>
+                                        <li>Explore o componente em 3D tocando na tela</li>
                                     </ol>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <!-- Chatbot de IA -->
-                <div class="col-lg-4">
+            </div>
+        </div>
+    </section>
+
+    <!-- Assistente de Circuitos -->
+    <section class="py-3 bg-primary text-white">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8">
                     <div class="chatbot-container">
-                        <div class="card chatbot-card">
-                            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                                <h5 class="mb-0">Assistente de Circuitos</h5>
-                                <button class="btn btn-sm btn-light" id="minimize-chat">
-                                    <i class="fas fa-minus"></i>
+                        <h5 class="mb-3">
+                            <i class="fas fa-robot me-2"></i>Assistente de Circuitos
+                        </h5>
+                        <div class="chat-messages" id="chatMessages">
+                            <div class="message bot-message">
+                                <i class="fas fa-robot me-2"></i>
+                                Olá! Sou seu assistente virtual para circuitos elétricos. Como posso ajudar você hoje?
+                            </div>
+                        </div>
+                        <div class="chat-input-container">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="chatInput" placeholder="Digite sua pergunta...">
+                                <button class="btn btn-light" type="button" id="sendButton">
+                                    <i class="fas fa-paper-plane"></i>
                                 </button>
-                            </div>
-                            <div class="card-body chatbot-body" id="chatbot-body">
-                                <div class="chat-messages" id="chat-messages">
-                                    <div class="message bot-message">
-                                        <div class="message-content">
-                                            Olá! Sou seu assistente virtual para circuitos elétricos. Como posso ajudar você hoje?
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="card-footer">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="chat-input" placeholder="Digite sua pergunta...">
-                                    <button class="btn btn-primary" id="send-message">
-                                        <i class="fas fa-paper-plane"></i>
-                                    </button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -148,58 +240,53 @@
         </div>
     </section>
 
-    <!-- Material Teórico Section -->
-    <section id="material" class="py-5 bg-light">
+    <!-- Material Teórico -->
+    <section id="material" class="py-5">
         <div class="container">
-            <div class="row">
-                <div class="col-12 text-center mb-5">
-                    <h2 class="section-title">Material Teórico</h2>
-                    <p class="section-subtitle">Conteúdo didático sobre circuitos elétricos</p>
-                </div>
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold">Material Teórico</h2>
+                <p class="lead">Conteúdo didático sobre circuitos elétricos</p>
             </div>
             
             <div class="row">
-                <div class="col-md-4 mb-4">
+                <div class="col-lg-4 mb-4">
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Circuitos em Série</h5>
                             <p class="card-text">Em um circuito em série, os componentes são conectados sequencialmente, formando um único caminho para a corrente elétrica.</p>
-                            <ul>
-                                <li>A corrente é a mesma em todos os componentes</li>
-                                <li>A tensão total é a soma das tensões em cada componente</li>
-                                <li>A resistência total é a soma das resistências individuais</li>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>A corrente é a mesma em todos os componentes</li>
+                                <li><i class="fas fa-check text-success me-2"></i>A tensão total é a soma das tensões em cada componente</li>
+                                <li><i class="fas fa-check text-success me-2"></i>A resistência total é a soma das resistências individuais</li>
                             </ul>
-                            <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#serieModal">Saiba mais</button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-md-4 mb-4">
+                <div class="col-lg-4 mb-4">
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Circuitos em Paralelo</h5>
                             <p class="card-text">Em um circuito em paralelo, os componentes são conectados em ramificações separadas, oferecendo múltiplos caminhos para a corrente.</p>
-                            <ul>
-                                <li>A tensão é a mesma em todos os componentes</li>
-                                <li>A corrente total é a soma das correntes em cada ramo</li>
-                                <li>A resistência total é menor que a menor resistência individual</li>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>A tensão é a mesma em todos os componentes</li>
+                                <li><i class="fas fa-check text-success me-2"></i>A corrente total é a soma das correntes em cada ramo</li>
+                                <li><i class="fas fa-check text-success me-2"></i>A resistência total é menor que a menor resistência individual</li>
                             </ul>
-                            <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#paraleloModal">Saiba mais</button>
                         </div>
                     </div>
                 </div>
                 
-                <div class="col-md-4 mb-4">
+                <div class="col-lg-4 mb-4">
                     <div class="card h-100">
                         <div class="card-body">
                             <h5 class="card-title">Circuitos Mistos</h5>
                             <p class="card-text">Circuitos mistos combinam elementos em série e em paralelo, exigindo análise por partes para determinar as grandezas elétricas.</p>
-                            <ul>
-                                <li>Identifique as partes em série e em paralelo</li>
-                                <li>Aplique as regras específicas para cada parte</li>
-                                <li>Combine os resultados para análise completa</li>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Identifique as partes em série e em paralelo</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Aplique as regras específicas para cada parte</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Combine os resultados para análise completa</li>
                             </ul>
-                            <button class="btn btn-outline-primary mt-3" data-bs-toggle="modal" data-bs-target="#mistoModal">Saiba mais</button>
                         </div>
                     </div>
                 </div>
@@ -207,54 +294,54 @@
         </div>
     </section>
 
-    <!-- Sobre o Projeto Section -->
-    <section id="sobre" class="py-5">
+    <!-- Sobre o Projeto -->
+    <section id="sobre" class="py-5 bg-light">
         <div class="container">
             <div class="row">
-                <div class="col-12 text-center mb-5">
-                    <h2 class="section-title">Sobre o Projeto</h2>
-                    <p class="section-subtitle">Informações sobre o desenvolvimento e objetivos</p>
-                </div>
-            </div>
-            
-            <div class="row">
-                <div class="col-lg-6">
-                    <h3>Objetivos</h3>
-                    <p>Este projeto visa integrar simulações interativas da plataforma PHET com um chatbot baseado em inteligência artificial para facilitar o aprendizado de circuitos elétricos em cursos técnicos.</p>
-                    <p>A combinação dessas tecnologias permite:</p>
-                    <ul>
-                        <li>Experimentação segura e econômica de circuitos elétricos</li>
-                        <li>Feedback imediato e personalizado através do chatbot</li>
-                        <li>Identificação e correção de erros comuns</li>
-                        <li>Aprendizagem significativa através da interação prática</li>
-                    </ul>
-                </div>
-                
-                <div class="col-lg-6">
-                    <h3>Metodologia</h3>
-                    <p>O desenvolvimento deste projeto seguiu uma abordagem centrada no usuário, com foco na experiência de aprendizado:</p>
-                    <ul>
-                        <li><strong>Frontend:</strong> HTML, CSS e JavaScript com Bootstrap para interface responsiva</li>
-                        <li><strong>Simulações:</strong> Integração com a plataforma PHET através de iframes</li>
-                        <li><strong>Chatbot:</strong> Implementação de assistente virtual treinado em conceitos de circuitos elétricos</li>
-                        <li><strong>Avaliação:</strong> Testes com estudantes de cursos técnicos para validação e aprimoramento</li>
-                    </ul>
-                    <p>Baseado nos princípios da aprendizagem significativa de Ausubel (2003), o projeto busca conectar novos conhecimentos a conceitos já existentes.</p>
-                </div>
-            </div>
-            
-            <div class="row mt-5">
-                <div class="col-12">
-                    <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">Referências</h5>
-                        </div>
+                <div class="col-lg-8 mx-auto">
+                    <div class="text-center mb-5">
+                        <h2 class="display-5 fw-bold">Sobre o Projeto</h2>
+                        <p class="lead">Informações sobre o desenvolvimento e objetivos</p>
+                    </div>
+                    
+                    <div class="card mb-4">
                         <div class="card-body">
+                            <h3>Objetivos</h3>
+                            <p>Este projeto visa integrar simulações interativas da plataforma PHET com um chatbot baseado em inteligência artificial para facilitar o aprendizado de circuitos elétricos em cursos técnicos.</p>
+                            
+                            <p>A combinação dessas tecnologias permite:</p>
+                            <ul>
+                                <li>Experimentação segura e econômica de circuitos elétricos</li>
+                                <li>Feedback imediato e personalizado através do chatbot</li>
+                                <li>Identificação e correção de erros comuns</li>
+                                <li>Aprendizagem significativa através da interação prática</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h3>Metodologia</h3>
+                            <p>O desenvolvimento deste projeto seguiu uma abordagem centrada no usuário, com foco na experiência de aprendizado:</p>
+                            <ul>
+                                <li><strong>Frontend:</strong> HTML, CSS e JavaScript com Bootstrap para interface responsiva</li>
+                                <li><strong>Simulações:</strong> Integração com a plataforma PHET através de iframes</li>
+                                <li><strong>Chatbot:</strong> Implementação de assistente virtual treinado em conceitos de circuitos elétricos</li>
+                                <li><strong>Realidade Aumentada:</strong> Integração com recursos do SENAI Space para visualização 3D</li>
+                                <li><strong>Avaliação:</strong> Testes com estudantes de cursos técnicos para validação e aprimoramento</li>
+                            </ul>
+                            <p>Baseado nos princípios da aprendizagem significativa de Ausubel (2003), o projeto busca conectar novos conhecimentos a conceitos já existentes.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>Referências</h5>
                             <ul class="list-unstyled">
-                                <li class="mb-2">Feitosa, M. C., & Lavor, O. P. (2020). Ensino de circuitos elétricos com auxílio de um simulador do PHET. <em>Revista REAMEC, 8</em>(1), 125-138.</li>
-                                <li class="mb-2">Mendonça, A. P. (2025). Orientações para uso de Inteligência Artificial Generativa no contexto acadêmico. Manaus: IFAM.</li>
-                                <li class="mb-2">UNESCO. (2024a). Guia para a IA Generativa na educação e na pesquisa. Paris: UNESCO.</li>
-                                <li class="mb-2">Ayala, N. F., et al. (2023). Inteligência Artificial Aplicada à Educação Profissional e Tecnológica. Brasília: MEC.</li>
+                                <li>• Feitosa, M. C., & Lavor, O. P. (2020). Ensino de circuitos elétricos com auxílio de um simulador do PHET. <em>Revista REAMEC, 8</em>(1), 125-138.</li>
+                                <li>• Mendonça, A. P. (2025). Orientações para uso de Inteligência Artificial Generativa no contexto acadêmico. Manaus: IFAM.</li>
+                                <li>• UNESCO. (2024a). Guia para a IA Generativa na educação e na pesquisa. Paris: UNESCO.</li>
+                                <li>• Ayala, N. F., et al. (2023). Inteligência Artificial Aplicada à Educação Profissional e Tecnológica. Brasília: MEC.</li>
                             </ul>
                         </div>
                     </div>
@@ -264,180 +351,45 @@
     </section>
 
     <!-- Footer -->
-    <footer class="footer bg-dark text-white py-4">
+    <footer class="bg-dark text-white py-4">
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h5>CircuitosEdu</h5>
+                    <h5>
+                        <i class="fas fa-bolt text-primary me-2"></i>CircuitosEdu
+                    </h5>
                     <p>Uma plataforma educacional para o ensino de circuitos elétricos com IA e simulações interativas.</p>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <h5>Links</h5>
                     <ul class="list-unstyled">
-                        <li><a href="#inicio" class="text-white">Início</a></li>
-                        <li><a href="#simulacoes" class="text-white">Simulações</a></li>
-                        <li><a href="#material" class="text-white">Material Teórico</a></li>
-                        <li><a href="#sobre" class="text-white">Sobre o Projeto</a></li>
+                        <li><a href="#inicio" class="text-white-50">Início</a></li>
+                        <li><a href="#simulacoes" class="text-white-50">Simulações</a></li>
+                        <li><a href="#realidade-aumentada" class="text-white-50">Realidade Aumentada</a></li>
+                        <li><a href="#material" class="text-white-50">Material Teórico</a></li>
+                        <li><a href="#sobre" class="text-white-50">Sobre o Projeto</a></li>
                     </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5>Contato</h5>
-                    <ul class="list-unstyled">
-                        <li><i class="fas fa-envelope me-2"></i>2025100716@ifam.edu.br</li>
-                        <li><i class="fas fa-phone me-2"></i> (92) 99627-5699</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="my-4">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p class="mb-0">&copy; 2025 CircuitosEdu. Todos os direitos reservados.</p>
                 </div>
             </div>
         </div>
     </footer>
 
-    <!-- Modais para Material Teórico -->
-    <!-- Modal Circuito em Série -->
-    <div class="modal fade" id="serieModal" tabindex="-1" aria-labelledby="serieModalLabel" aria-hidden="true">
+    <!-- Modal para detalhes dos recursos de RA -->
+    <div class="modal fade" id="arResourceModal" tabindex="-1" aria-labelledby="arResourceModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="serieModalLabel">Circuitos em Série</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="arResourceModalLabel">Detalhes do Recurso</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>Características dos Circuitos em Série:</h6>
-                            <ul>
-                                <li>Componentes conectados sequencialmente</li>
-                                <li>Um único caminho para a corrente elétrica</li>
-                                <li>Se um componente falhar, todo o circuito é interrompido</li>
-                            </ul>
-                            
-                            <h6>Leis e Fórmulas:</h6>
-                            <p><strong>Corrente:</strong> I = I₁ = I₂ = ... = Iₙ</p>
-                            <p><strong>Tensão Total:</strong> V = V₁ + V₂ + ... + Vₙ</p>
-                            <p><strong>Resistência Total:</strong> R = R₁ + R₂ + ... + Rₙ</p>
-                            
-                            <h6>Aplicações Práticas:</h6>
-                            <ul>
-                                <li>Luzes de árvore de Natal antigas</li>
-                                <li>Alguns tipos de sensores</li>
-                                <li>Circuitos de proteção</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <img src="img/serie-circuit.png" alt="Circuito em Série" class="img-fluid rounded mb-3">
-                            <p>Exemplo de um circuito em série com resistores. Note como a corrente segue um único caminho através de todos os componentes.</p>
-                        </div>
-                    </div>
+                <div class="modal-body" id="arResourceModalBody">
+                    <!-- Conteúdo será carregado dinamicamente -->
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" id="load-serie-simulation">Carregar Simulação</button>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Modal Circuito em Paralelo -->
-    <div class="modal fade" id="paraleloModal" tabindex="-1" aria-labelledby="paraleloModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="paraleloModalLabel">Circuitos em Paralelo</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>Características dos Circuitos em Paralelo:</h6>
-                            <ul>
-                                <li>Componentes conectados em ramificações separadas</li>
-                                <li>Múltiplos caminhos para a corrente elétrica</li>
-                                <li>Se um componente falhar, os outros continuam funcionando</li>
-                            </ul>
-                            
-                            <h6>Leis e Fórmulas:</h6>
-                            <p><strong>Tensão:</strong> V = V₁ = V₂ = ... = Vₙ</p>
-                            <p><strong>Corrente Total:</strong> I = I₁ + I₂ + ... + Iₙ</p>
-                            <p><strong>Resistência Total:</strong> 1/R = 1/R₁ + 1/R₂ + ... + 1/Rₙ</p>
-                            
-                            <h6>Aplicações Práticas:</h6>
-                            <ul>
-                                <li>Instalações elétricas residenciais</li>
-                                <li>Luzes de Natal modernas</li>
-                                <li>Sistemas de distribuição de energia</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <img src="img/paralelo-circuit.png" alt="Circuito em Paralelo" class="img-fluid rounded mb-3">
-                            <p>Exemplo de um circuito em paralelo. Observe como a corrente se divide entre os diferentes caminhos disponíveis.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" id="load-paralelo-simulation">Carregar Simulação</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal Circuito Misto -->
-    <div class="modal fade" id="mistoModal" tabindex="-1" aria-labelledby="mistoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="mistoModalLabel">Circuitos Mistos</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h6>Características dos Circuitos Mistos:</h6>
-                            <ul>
-                                <li>Combinação de elementos em série e em paralelo</li>
-                                <li>Estrutura mais complexa que requer análise por partes</li>
-                                <li>Comportamento híbrido das grandezas elétricas</li>
-                            </ul>
-                            
-                            <h6>Método de Análise:</h6>
-                            <ol>
-                                <li>Identifique as partes em série e em paralelo</li>
-                                <li>Calcule as resistências equivalentes para cada parte</li>
-                                <li>Simplifique o circuito progressivamente</li>
-                                <li>Determine as grandezas elétricas (corrente, tensão) em cada componente</li>
-                            </ol>
-                            
-                            <h6>Aplicações Práticas:</h6>
-                            <ul>
-                                <li>Circuitos eletrônicos complexos</li>
-                                <li>Sistemas de controle</li>
-                                <li>Redes de distribuição de energia</li>
-                            </ul>
-                        </div>
-                        <div class="col-md-6">
-                            <img src="img/misto-circuit.png" alt="Circuito Misto" class="img-fluid rounded mb-3">
-                            <p>Exemplo de um circuito misto com elementos em série e paralelo. A análise requer a identificação das diferentes partes do circuito.</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-                    <button type="button" class="btn btn-primary" id="load-misto-simulation">Carregar Simulação</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Botão flutuante para chatbot (mobile) -->
-    <div class="chat-float-button d-lg-none">
-        <button class="btn btn-primary rounded-circle" id="open-chat-mobile">
-            <i class="fas fa-comment"></i>
-        </button>
     </div>
 
     <!-- Bootstrap JS -->
