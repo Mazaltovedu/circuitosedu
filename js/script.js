@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // URLs base para as simulações PHET    const phetBaseUrl = 'https://phet.colorado.edu/sims/html/circuit-construction-kit-ac/latest/circuit-construction-kit-ac_all.html';
     
     // Chave da API OpenAI (ATENÇÃO: Em um ambiente de produção, esta chave não deve ser exposta diretamente no frontend)
-    const openaiApiKey = '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';
+    const openaiApiKey = ""; // Removida por segurança. Por favor, use um backend para gerenciar chaves de API.
     // Base de conhecimento para o chatbot (será usada como fallback ou para respostas rápidas)
     const knowledgeBase = {
         // Perguntas gerais    'ola': 'Olá! Como posso ajudar você com circuitos elétricos de corrente alternada hoje?',
