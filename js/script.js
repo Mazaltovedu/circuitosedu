@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const circuitType = document.getElementById('circuit-type');
     const phetIframe = document.getElementById('phet-iframe');
     const instructionList = document.getElementById('instruction-list');
+    const raButton = document.querySelector('a[href="#recursos-ra"]');
     
     // Botões para carregar simulações específicas
     const loadSerieBtn = document.getElementById('load-serie-simulation');
@@ -23,64 +24,67 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadMistoBtn = document.getElementById('load-misto-simulation');
     
     // ===== Configurações =====
-    // URLs base para as simulações PHET
-    const phetBaseUrl = 'https://phet.colorado.edu/sims/html/circuit-construction-kit-dc/latest/circuit-construction-kit-dc_pt_BR.html';
+    // URLs base para as simulações PHET    const phetBaseUrl = 'https://phet.colorado.edu/sims/html/circuit-construction-kit-ac/latest/circuit-construction-kit-ac_all.html';
     
-    // Parâmetros para diferentes tipos de circuitos
-    const circuitParams = {
-        serie: '?screens=1&circuit=series',
-        paralelo: '?screens=1&circuit=parallel',
-        misto: '?screens=1&circuit=mixed'
-    };
-    
-    // Base de conhecimento para o chatbot
+    // Chave da API OpenAI (ATENÇÃO: Em um ambiente de produção, esta chave não deve ser exposta diretamente no frontend)
+    const openaiApiKey = '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';
+    // Base de conhecimento para o chatbot (será usada como fallback ou para respostas rápidas)
     const knowledgeBase = {
-        // Perguntas gerais
-        'ola': 'Olá! Como posso ajudar você com circuitos elétricos hoje?',
-        'oi': 'Olá! Como posso ajudar você com circuitos elétricos hoje?',
-        'ajuda': 'Posso ajudar com dúvidas sobre circuitos em série, paralelo ou mistos. O que você gostaria de saber?',
+        // Perguntas gerais    'ola': 'Olá! Como posso ajudar você com circuitos elétricos de corrente alternada hoje?',
+        'oi': 'Olá! Como posso ajudar você com circuitos elétricos de corrente alternada hoje?',
+        'ajuda': 'Posso ajudar com dúvidas sobre circuitos CA em série, paralelo ou mistos. O que você gostaria de saber?',
         
         // Circuitos em série
-        'serie': 'Em um circuito em série, os componentes são conectados sequencialmente, formando um único caminho para a corrente elétrica. A corrente é a mesma em todos os componentes, e a tensão total é a soma das tensões em cada componente.',
-        'circuito serie': 'Em um circuito em série, os componentes são conectados sequencialmente, formando um único caminho para a corrente elétrica. A corrente é a mesma em todos os componentes, e a tensão total é a soma das tensões em cada componente.',
-        'resistencia serie': 'Em um circuito em série, a resistência total é a soma das resistências individuais: Rtotal = R1 + R2 + ... + Rn',
-        'corrente serie': 'Em um circuito em série, a corrente é a mesma em todos os componentes: I = I1 = I2 = ... = In',
-        'tensao serie': 'Em um circuito em série, a tensão total é a soma das tensões em cada componente: Vtotal = V1 + V2 + ... + Vn',
+        'serie': 'Em um circuito CA em série, os componentes são conectados sequencialmente. A corrente é a mesma em todos os componentes, mas a análise de tensão é mais complexa que em CC devido à impedância dos componentes.',
+        'circuito serie': 'Em um circuito CA em série, os componentes são conectados sequencialmente. A corrente é a mesma em todos os componentes, mas a análise de tensão é mais complexa que em CC devido à impedância dos componentes.',
+        'resistencia serie': 'Em um circuito CA em série, a impedância total é a soma das impedâncias individuais: Ztotal = Z1 + Z2 + ... + Zn. Lembre-se que a impedância considera resistência, capacitância e indutância.',
+        'corrente serie': 'Em um circuito CA em série, a corrente é a mesma em todos os componentes: I = I1 = I2 = ... = In, mas varia senoidalmente com o tempo.',
+        'tensao serie': 'Em um circuito CA em série, a tensão total é a soma fasorial das tensões em cada componente, considerando as diferenças de fase.',
         
         // Circuitos em paralelo
-        'paralelo': 'Em um circuito em paralelo, os componentes são conectados em ramificações separadas, oferecendo múltiplos caminhos para a corrente. A tensão é a mesma em todos os componentes, e a corrente total é a soma das correntes em cada ramo.',
-        'circuito paralelo': 'Em um circuito em paralelo, os componentes são conectados em ramificações separadas, oferecendo múltiplos caminhos para a corrente. A tensão é a mesma em todos os componentes, e a corrente total é a soma das correntes em cada ramo.',
-        'resistencia paralelo': 'Em um circuito em paralelo, o inverso da resistência total é a soma dos inversos das resistências individuais: 1/Rtotal = 1/R1 + 1/R2 + ... + 1/Rn',
-        'corrente paralelo': 'Em um circuito em paralelo, a corrente total é a soma das correntes em cada ramo: Itotal = I1 + I2 + ... + In',
-        'tensao paralelo': 'Em um circuito em paralelo, a tensão é a mesma em todos os componentes: V = V1 = V2 = ... = Vn',
+        'paralelo': 'Em um circuito CA em paralelo, os componentes são conectados em ramificações separadas. A tensão é a mesma em todos os componentes, mas a análise de corrente é mais complexa que em CC devido à impedância.',
+        'circuito paralelo': 'Em um circuito CA em paralelo, os componentes são conectados em ramificações separadas. A tensão é a mesma em todos os componentes, mas a análise de corrente é mais complexa que em CC devido à impedância.',
+        'impedancia paralelo': 'Em um circuito CA em paralelo, o inverso da impedância total é a soma dos inversos das impedâncias individuais: 1/Ztotal = 1/Z1 + 1/Z2 + ... + 1/Zn',
+        'corrente paralelo': 'Em um circuito CA em paralelo, a corrente total é a soma fasorial das correntes em cada ramo, considerando as diferenças de fase.',
+        'tensao paralelo': 'Em um circuito CA em paralelo, a tensão é a mesma em todos os componentes: V = V1 = V2 = ... = Vn, mas varia senoidalmente com o tempo.',
         
         // Circuitos mistos
-        'misto': 'Circuitos mistos combinam elementos em série e em paralelo. Para analisá-los, identifique as partes em série e em paralelo, aplique as regras específicas para cada parte e combine os resultados.',
-        'circuito misto': 'Circuitos mistos combinam elementos em série e em paralelo. Para analisá-los, identifique as partes em série e em paralelo, aplique as regras específicas para cada parte e combine os resultados.',
-        'analisar misto': 'Para analisar um circuito misto: 1) Identifique as partes em série e em paralelo, 2) Calcule as resistências equivalentes para cada parte, 3) Simplifique o circuito progressivamente, 4) Determine as grandezas elétricas em cada componente.',
+        'misto': 'Circuitos CA mistos combinam elementos em série e em paralelo. Para analisá-los, identifique as partes em série e em paralelo, aplique as regras específicas para cada parte e combine os resultados, considerando as relações fasoriais.',
+        'circuito misto': 'Circuitos CA mistos combinam elementos em série e em paralelo. Para analisá-los, identifique as partes em série e em paralelo, aplique as regras específicas para cada parte e combine os resultados, considerando as relações fasoriais.',
+        'analisar misto': 'Para analisar um circuito CA misto: 1) Identifique as partes em série e em paralelo, 2) Calcule as impedâncias equivalentes para cada parte, 3) Simplifique o circuito progressivamente, 4) Determine as grandezas elétricas em cada componente.',
         
-        // Lei de Ohm
-        'lei de ohm': 'A Lei de Ohm estabelece que a corrente que passa por um condutor é diretamente proporcional à tensão e inversamente proporcional à resistência: I = V/R',
-        'ohm': 'A Lei de Ohm estabelece que a corrente que passa por um condutor é diretamente proporcional à tensão e inversamente proporcional à resistência: I = V/R',
+        // Conceitos de CA
+        'corrente alternada': 'A corrente alternada (CA) é uma corrente elétrica que inverte periodicamente sua direção. Sua principal vantagem é a facilidade de transformação de tensão, o que permite transmissão de energia a longas distâncias com menos perdas.',
+        'ca': 'CA significa Corrente Alternada. É uma corrente elétrica que muda periodicamente de direção, geralmente em forma senoidal. É o tipo de corrente utilizada nas redes elétricas residenciais e industriais.',
+        'frequencia': 'A frequência em circuitos CA é o número de ciclos completos por segundo, medida em Hertz (Hz). No Brasil, a frequência da rede elétrica é de 60 Hz, enquanto em muitos países da Europa é 50 Hz.',
+        'fase': 'A fase em circuitos CA refere-se à posição relativa de uma onda senoidal em relação a outra. A diferença de fase entre tensão e corrente é crucial para análise de potência em circuitos CA.',
         
-        // Componentes
-        'resistor': 'O resistor é um componente que limita o fluxo de corrente elétrica em um circuito. Sua unidade de medida é o Ohm (Ω).',
-        'capacitor': 'O capacitor é um componente que armazena energia em um campo elétrico. Sua unidade de medida é o Farad (F).',
-        'indutor': 'O indutor é um componente que armazena energia em um campo magnético. Sua unidade de medida é o Henry (H).',
-        'diodo': 'O diodo é um componente semicondutor que permite a passagem de corrente em apenas uma direção.',
-        'led': 'O LED (Light Emitting Diode) é um tipo de diodo que emite luz quando uma corrente elétrica passa por ele.',
+        // Componentes específicos de CA
+        'capacitor': 'Em circuitos CA, o capacitor apresenta uma reatância capacitiva (Xc = 1/2πfC) que se opõe à variação de tensão. A corrente no capacitor está adiantada 90° em relação à tensão.',
+        'indutor': 'Em circuitos CA, o indutor apresenta uma reatância indutiva (XL = 2πfL) que se opõe à variação de corrente. A corrente no indutor está atrasada 90° em relação à tensão.',
+        'impedancia': 'A impedância é a oposição total ao fluxo de corrente alternada, combinando resistência e reatância. É representada por um número complexo Z = R + jX, onde R é a resistência e X é a reatância.',
+        'reatancia': 'A reatância é a parte da impedância que surge devido a indutores (reatância indutiva, XL) e capacitores (reatância capacitiva, Xc) em circuitos CA.',
         
-        // Instrumentos de medição
-        'multimetro': 'O multímetro é um instrumento que pode medir tensão, corrente e resistência. Na simulação, você pode usá-lo para verificar os valores em diferentes pontos do circuito.',
-        'amperimetro': 'O amperímetro é um instrumento usado para medir a corrente elétrica. Deve ser conectado em série com o componente que se deseja medir.',
-        'voltimetro': 'O voltímetro é um instrumento usado para medir a tensão elétrica. Deve ser conectado em paralelo com o componente que se deseja medir.',
+        // Potência em CA
+        'potencia': 'Em circuitos CA, existem três tipos de potência: ativa (P, em watts), reativa (Q, em volt-ampères reativos) e aparente (S, em volt-ampères). A relação entre elas forma o triângulo de potências.',
+        'fator de potencia': 'O fator de potência é a razão entre a potência ativa e a potência aparente (cos φ). Um fator de potência baixo indica uso ineficiente da energia elétrica.',
+        'potencia ativa': 'A potência ativa (P) em circuitos CA é a potência realmente consumida pelo circuito, medida em watts (W). É calculada como P = VI cos φ, onde φ é o ângulo de fase entre tensão e corrente.',
+        'potencia reativa': 'A potência reativa (Q) em circuitos CA é a potência que oscila entre a fonte e os elementos reativos, medida em volt-ampères reativos (VAr). É calculada como Q = VI sin φ.',
         
-        // Erros comuns
-        'curto circuito': 'Um curto-circuito ocorre quando há um caminho de baixa resistência entre dois pontos de um circuito, causando um fluxo excessivo de corrente. Isso pode danificar componentes ou causar acidentes.',
-        'circuito aberto': 'Um circuito aberto ocorre quando há uma interrupção no caminho da corrente elétrica, impedindo seu fluxo. Isso pode ser causado por um componente queimado ou uma conexão solta.',
+        // Circuito RLC
+        'rlc': 'Um circuito RLC contém resistor (R), indutor (L) e capacitor (C). Em CA, pode apresentar comportamento ressonante quando as reatâncias indutiva e capacitiva se igualam.',
+        'ressonancia': 'A ressonância ocorre em um circuito RLC quando a frequência faz com que as reatâncias indutiva e capacitiva se anulem. Na ressonância, a impedância é mínima e a corrente é máxima.',
+        'frequencia ressonancia': 'A frequência de ressonância de um circuito RLC é calculada como f = 1/(2π√LC), onde L é a indutância e C é a capacitância.',
+        
+        // Realidade Aumentada
+        'ra': 'Para acessar os recursos de Realidade Aumentada (RA), você precisa baixar o aplicativo SENAI Space disponível para Android e iOS. Depois, escaneie as tags RA disponíveis em nosso material didático.',
+        'realidade aumentada': 'Para acessar os recursos de Realidade Aumentada (RA), você precisa baixar o aplicativo SENAI Space disponível para Android e iOS. Depois, escaneie as tags RA disponíveis em nosso material didático.',
+        'senai space': 'O SENAI Space é o aplicativo oficial para acessar os recursos de Realidade Aumentada. Está disponível para Android na Play Store e para iOS na App Store.',
+        'app': 'Para acessar os recursos de RA, você precisa baixar o aplicativo SENAI Space. Está disponível para Android na Play Store e para iOS na App Store.',
+        'tags': 'As tags RA são marcadores que, quando escaneados pelo aplicativo SENAI Space, mostram conteúdo em Realidade Aumentada relacionado aos circuitos elétricos.',
         
         // Fallback
-        'default': 'Desculpe, não tenho informações específicas sobre isso. Posso ajudar com dúvidas sobre circuitos em série, paralelo, mistos, Lei de Ohm ou componentes elétricos.'
+        'default': 'Desculpe, não tenho informações específicas sobre isso. Posso ajudar com dúvidas sobre circuitos CA em série, paralelo, mistos, componentes específicos de CA, ou conceitos como impedância, reatância e potência.'
     };
     
     // ===== Funções do Chatbot =====
@@ -102,20 +106,17 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Função para processar a entrada do usuário e gerar resposta
-    function processUserInput(input) {
+    async function processUserInput(input) {
         // Converte para minúsculas e remove acentos para facilitar a correspondência
         const normalizedInput = input.toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '');
-        
-        // Procura por palavras-chave na base de conhecimento
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "");
+
+        // Tenta encontrar uma resposta na base de conhecimento local primeiro
         let response = knowledgeBase.default;
-        
-        // Verifica se há correspondência exata
         if (knowledgeBase[normalizedInput]) {
             response = knowledgeBase[normalizedInput];
         } else {
-            // Procura por correspondência parcial
             for (const key in knowledgeBase) {
                 if (normalizedInput.includes(key)) {
                     response = knowledgeBase[key];
@@ -123,7 +124,39 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-        
+
+        // Se a base de conhecimento local não tiver uma resposta específica, consulta a OpenAI
+        if (response === knowledgeBase.default) {
+            try {
+                const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${openaiApiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: "gpt-3.5-turbo", // Ou outro modelo de sua preferência
+                        messages: [
+                            { role: "system", content: "Você é um assistente especializado em circuitos elétricos, corrente alternada (CA), componentes eletrônicos (resistor, capacitor, indutor, transformador, motor, retificador, filtros, amplificador, oscilador), grandezas elétricas (tensão, corrente, potência, frequência, fase, impedância, reatância, fator de potência, ressonância) e Realidade Aumentada (RA) no contexto educacional. Responda de forma clara, concisa e didática, focando em conceitos fundamentais e aplicações práticas. Inclua informações sobre as tags de RA quando pertinente." },
+                            { role: "user", content: input }
+                        ],
+                        max_tokens: 150,
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await openaiResponse.json();
+                if (data.choices && data.choices.length > 0) {
+                    response = data.choices[0].message.content;
+                } else {
+                    response = "Desculpe, não consegui obter uma resposta da IA no momento. Tente novamente mais tarde.";
+                }
+            } catch (error) {
+                console.error("Erro ao chamar a API da OpenAI:", error);
+                response = "Ocorreu um erro ao tentar conectar com a inteligência artificial. Por favor, verifique sua conexão ou tente novamente.";
+            }
+        }
+
         // Adiciona a resposta ao chat
         addMessage(response);
     }
