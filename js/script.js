@@ -33,6 +33,9 @@ document.addEventListener('DOMContentLoaded', function() {
         paralelo: '?locale=pt&screens=0&circuit=parallel',
         misto: '?locale=pt&screens=0&circuit=mixed'
     };
+    //BASE DE PESQUISA VIA OPENAI
+    const openaiApiKey = "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"; // Removida por segurança. Por favor, use um backend para gerenciar chaves de API.
+
     
     // Base de conhecimento para o chatbot (simulando manus.ia)
     const knowledgeBase = {
