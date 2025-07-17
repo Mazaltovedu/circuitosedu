@@ -1,6 +1,7 @@
 /**
  * Script principal para a página web "IA e Simulações Interativas no Ensino de Circuitos Elétricos"
  * Responsável pela interatividade, chatbot e integração com simulações PHET
+ * Versão: ChatGPT OpenAI Integrado
  */
 
 // Espera o DOM ser completamente carregado
@@ -29,85 +30,24 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Parâmetros para diferentes tipos de circuitos
     const circuitParams = {
-        serie: '?locale=pt&screens=0&circuit=series',
-        paralelo: '?locale=pt&screens=0&circuit=parallel',
-        misto: '?locale=pt&screens=0&circuit=mixed'
+        serie: '?locale=pt',
+        paralelo: '?locale=pt',
+        misto: '?locale=pt'
     };
     
-    // Base de conhecimento expandida para o chatbot
-    const knowledgeBase = {
-        // Saudações e ajuda inicial
-        "ola": "Olá! Sou o CircuitosEdu Assistente, sua IA para auxiliar no aprendizado de circuitos elétricos e automação industrial. Como posso ajudar você hoje?",
-        "oi": "Olá! Sou o CircuitosEdu Assistente, sua IA para auxiliar no aprendizado de circuitos elétricos e automação industrial. Como posso ajudar você hoje?",
-        "bom dia": "Bom dia! Sou o CircuitosEdu Assistente. Pronto para explorar o mundo dos circuitos e da automação?",
-        "boa tarde": "Boa tarde! Sou o CircuitosEdu Assistente. Em que posso ser útil agora?",
-        "boa noite": "Boa noite! Sou o CircuitosEdu Assistente. Tem alguma dúvida sobre circuitos ou automação?",
-        "ajuda": "Posso ajudar com uma vasta gama de tópicos, incluindo: fundamentos de circuitos CA e CC, análise de circuitos em série, paralelo e misto, componentes eletrônicos, leis da eletricidade, conceitos de automação industrial (CLP, sensores, atuadores, redes industriais), motores DC e trifásicos, sensores indutivos e capacitivos, e muito mais. O que você gostaria de saber especificamente?",
-        "quem e voce": "Sou o CircuitosEdu Assistente, uma inteligência artificial desenvolvida para auxiliar estudantes de automação industrial no aprendizado de circuitos elétricos e tópicos relacionados. Minha base de conhecimento é constantemente atualizada para fornecer as informações mais precisas e relevantes.",
-
-        // Motor DC
-        "motor dc": "Um motor de corrente contínua (CC ou DC) é uma máquina elétrica que converte energia elétrica CC em energia mecânica. Seu funcionamento baseia-se na interação entre um campo magnético (criado por ímãs permanentes ou bobinas de campo) e a corrente elétrica que percorre as bobinas do rotor (armadura).",
-        "funcionamento motor dc": "Quando a corrente elétrica passa pelas bobinas do rotor, ela interage com o campo magnético fixo, gerando uma força que causa o movimento de rotação. Um comutador e escovas garantem que a corrente no rotor sempre flua na direção correta para manter o torque em uma única direção.",
-        "caracteristicas motor dc": "As principais características de um motor DC incluem: controle de velocidade relativamente simples (variando a tensão ou corrente de armadura), alto torque de partida, e a necessidade de escovas e comutador (em motores com escovas), que podem gerar desgaste e faíscas. Existem também motores DC sem escovas (Brushless DC - BLDC) que eliminam esses problemas.",
-
-        // Motor Trifásico
-        "motor trifasico": "Um motor trifásico é uma máquina elétrica que converte energia elétrica de corrente alternada (CA) trifásica em energia mecânica. É amplamente utilizado na indústria devido à sua robustez, eficiência e capacidade de operar com altas potências.",
-        "funcionamento motor trifasico": "O funcionamento do motor trifásico baseia-se na criação de um campo magnético girante no estator (parte fixa) a partir das três fases da corrente alternada. Esse campo magnético induz uma corrente no rotor (parte giratória), que por sua vez gera um campo magnético próprio. A interação entre o campo do estator e do rotor produz o torque que faz o motor girar.",
-        "caracteristicas motor trifasico": "As principais características de um motor trifásico incluem: alta eficiência, autostart (não precisa de dispositivos auxiliares para partida), robustez, baixo custo de manutenção (motores de indução), e a capacidade de operar em diversas velocidades e potências. São ideais para aplicações industriais que exigem alta potência e confiabilidade.",
-
-        // Valores Comerciais de Componentes Eletrônicos
-        "valores comerciais componentes": "Os valores comerciais de componentes eletrônicos (resistores, capacitores, indutores, etc.) são padronizados para facilitar a fabricação e a substituição. Para resistores, por exemplo, existem as séries E (E6, E12, E24, E48, E96, E192) que definem os valores preferenciais com base em tolerâncias. É importante consultar catálogos de fabricantes ou distribuidores para obter os valores exatos e a disponibilidade.",
-        "onde comprar componentes": "Componentes eletrônicos podem ser adquiridos em lojas especializadas em eletrônica, distribuidores de componentes (online ou físicos) e plataformas de e-commerce. Alguns exemplos incluem Farnell, Mouser, Digi-Key, RS Components, e no Brasil, empresas como Newark, Soldafria, entre outras.",
-
-        // Sensores Indutivos e Capacitivos
-        "sensor indutivo": "Um sensor indutivo é um tipo de sensor de proximidade que detecta a presença de objetos metálicos sem contato físico. Ele funciona gerando um campo eletromagnético de alta frequência. Quando um objeto metálico entra nesse campo, ele induz correntes parasitas no objeto, que por sua vez alteram o campo magnético do sensor, detectando assim a presença do objeto.",
-        "aplicacao sensor indutivo": "Sensores indutivos são amplamente utilizados na automação industrial para detecção de posição de peças metálicas, contagem de objetos, controle de velocidade e presença em linhas de montagem, máquinas-ferramenta, robótica, e sistemas de transporte.",
-        "sensor capacitivo": "Um sensor capacitivo é um tipo de sensor de proximidade que detecta a presença de objetos (metálicos ou não metálicos) sem contato físico. Ele funciona gerando um campo elétrico. A presença de um objeto altera a capacitância do sensor, que é detectada e convertida em um sinal de saída.",
-        "aplicacao sensor capacitivo": "Sensores capacitivos são versáteis e utilizados para detecção de nível de líquidos ou materiais granulados (em tanques, silos), detecção de objetos não metálicos (plástico, madeira, vidro), controle de posição, e em aplicações onde a detecção de materiais diversos é necessária, como na indústria alimentícia e farmacêutica.",
-
-        // Circuitos em Série (CA e CC)
-        "serie": "Em um circuito em série, os componentes são conectados sequencialmente, formando um único caminho para a corrente. Em CC, a resistência total é a soma das resistências. Em CA, a impedância total é a soma vetorial das impedâncias individuais (Z_total = Z1 + Z2 + ...). A corrente é a mesma em todos os componentes em ambos os casos.",
-        "circuito serie": "Um circuito em série é aquele onde os componentes estão ligados um após o outro, de modo que a corrente elétrica tem apenas um caminho a percorrer. Isso vale tanto para corrente contínua (CC) quanto para corrente alternada (CA).",
-
-        // Circuitos em Paralelo (CA e CC)
-        "paralelo": "Em um circuito em paralelo, os componentes são conectados em ramificações separadas, oferecendo múltiplos caminhos para a corrente. Em CC, o inverso da resistência total é a soma dos inversos das resistências. Em CA, o inverso da impedância total é a soma vetorial dos inversos das impedâncias. A tensão é a mesma em todos os componentes em ambos os casos.",
-        "circuito paralelo": "Um circuito em paralelo é aquele onde os componentes estão ligados de forma que a corrente elétrica se divide entre eles, existindo múltiplos caminhos. A tensão sobre cada componente em paralelo é a mesma.",
-
-        // Circuitos Mistos (CA e CC)
-        "misto": "Circuitos mistos combinam elementos em série e em paralelo. Para analisá-los, tanto em CC quanto em CA, é preciso simplificar o circuito por partes, aplicando as regras de série e paralelo progressivamente. Em CA, as somas devem ser vetoriais devido às impedâncias.",
-        "circuito misto": "Um circuito misto é uma combinação de partes em série e partes em paralelo. A análise requer identificar essas seções e aplicar as respectivas leis para simplificar o circuito até encontrar os valores desejados.",
-
-        // Lei de Ohm e Leis de Kirchhoff
-        "lei de ohm": "A Lei de Ohm afirma que a corrente (I) através de um condutor entre dois pontos é diretamente proporcional à tensão (V) entre esses dois pontos e inversamente proporcional à resistência (R) entre eles. Matematicamente: V = I * R. Em circuitos CA, usamos Z (impedância) no lugar de R: V = I * Z.",
-        "leis de kirchhoff": "As Leis de Kirchhoff são duas: a Lei dos Nós (LKC ou primeira lei) e a Lei das Malhas (LKT ou segunda lei). Elas são fundamentais para a análise de circuitos mais complexos.",
-
-        // Conceitos de CA
-        "corrente alternada": "A corrente alternada (CA ou AC, do inglês Alternating Current) é um tipo de corrente elétrica cujo sentido varia no tempo, ao contrário da corrente contínua (CC ou DC) que tem sentido constante. A forma de onda mais comum da CA é a senoidal.",
-        "ca": "CA significa Corrente Alternada. É uma corrente elétrica que muda periodicamente de direção e magnitude, geralmente de forma senoidal. É o tipo de corrente que chega às nossas casas e indústrias.",
-
-        // Componentes
-        "resistor": "O resistor é um componente passivo que se opõe à passagem de corrente elétrica, convertendo energia elétrica em calor (efeito Joule). Sua principal característica é a resistência (R), medida em Ohms (Ω).",
-        "capacitor": "O capacitor é um componente que armazena energia em um campo elétrico formado entre duas placas condutoras separadas por um dielétrico. Sua capacidade de armazenamento é a capacitância (C), medida em Farads (F). Em CA, ele oferece uma oposição à passagem da corrente chamada reatância capacitiva (Xc).",
-        "indutor": "O indutor (ou bobina) é um componente que armazena energia em um campo magnético gerado pela passagem de corrente elétrica por um fio enrolado. Sua principal característica é a indutância (L), medida em Henrys (H). Em CA, ele oferece uma oposição à passagem da corrente chamada reatância indutiva (Xl).",
-
-        // Automação Industrial
-        "automacao industrial": "Automação industrial é o uso de sistemas de controle, como computadores ou robôs, e tecnologias da informação para lidar com diferentes processos e máquinas em uma indústria para substituir um ser humano. O objetivo é aumentar a produtividade, qualidade e segurança, reduzindo custos e tempo de produção.",
-        "clp": "CLP (Controlador Lógico Programável) ou PLC (Programmable Logic Controller) é um computador industrial robusto usado para automatizar processos eletromecânicos, como controle de máquinas em linhas de montagem, parques de diversões, ou sistemas de iluminação. É programado através de linguagens específicas como Ladder, FBD, ou ST.",
-        "sensores": "Sensores são dispositivos que detectam e respondem a algum tipo de entrada do ambiente físico. A entrada específica pode ser luz, calor, movimento, umidade, pressão, ou qualquer um de uma grande variedade de outros fenômenos ambientais. A saída é geralmente um sinal que é convertido para uso humano ou enviado eletronicamente através de uma rede para leitura ou processamento adicional.",
-
-        // Padrão de resposta para termos não encontrados
-        "default": "Desculpe, não tenho informações específicas sobre esse tópico em minha base de conhecimento atual. Posso ajudar com questões sobre circuitos elétricos (CA e CC), componentes eletrônicos, motores (DC e trifásicos), sensores (indutivos e capacitivos), automação industrial, CLPs, instrumentação, ou outros tópicos relacionados. Você poderia reformular sua pergunta ou especificar melhor o que gostaria de saber?"
-    };
-
+    // URL da API do backend (ajuste conforme necessário)
+    const API_BASE_URL = window.CHATBOT_API_URL || 'http://localhost:5000';
+    
     // ===== Funções do Chatbot =====
     
-    // Função para processar a entrada do usuário com IA (OpenAI API)
+    // Função para processar a entrada do usuário e gerar resposta via OpenAI
     async function processUserInput(message) {
         try {
-            // Adiciona indicador de carregamento
-            addMessage('Processando...', 'bot', true);
+            // Mostra indicador de carregamento
+            addMessage('bot', 'Pensando...', true);
             
-            const response = await fetch('http://localhost:5000/chat', {
+            // Faz a requisição para a API do backend
+            const response = await fetch(`${API_BASE_URL}/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -120,65 +60,50 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (response.ok) {
                 const data = await response.json();
-                addMessage(data.response, 'bot');
-            } else if (response.status === 429) {
-                // Quota excedida, usar fallback local
-                processUserInputLocal(message);
+                addMessage('bot', data.response);
             } else {
-                throw new Error('Erro na comunicação com o servidor');
+                const errorData = await response.json();
+                let errorMessage = 'Não foi possível processar sua mensagem.';
+                
+                if (response.status === 429) {
+                    errorMessage = 'Limite de uso da API excedido. Tente novamente em alguns minutos.';
+                } else if (response.status === 401) {
+                    errorMessage = 'Erro de autenticação. Verifique se a chave da API está configurada corretamente.';
+                } else if (errorData.error) {
+                    errorMessage = errorData.error;
+                }
+                
+                addMessage('bot', `❌ ${errorMessage}`);
             }
+            
         } catch (error) {
             // Remove o indicador de carregamento
             removeLoadingMessage();
             
-            // Em caso de erro, usar base de conhecimento local
-            console.log('Erro na API, usando fallback local:', error);
-            processUserInputLocal(message);
-        }
-    }
-    
-    // Função para processar entrada com base de conhecimento local (fallback)
-    function processUserInputLocal(message) {
-        const normalizedMessage = message.toLowerCase()
-            .replace(/[áàâãä]/g, 'a')
-            .replace(/[éèêë]/g, 'e')
-            .replace(/[íìîï]/g, 'i')
-            .replace(/[óòôõö]/g, 'o')
-            .replace(/[úùûü]/g, 'u')
-            .replace(/[ç]/g, 'c')
-            .replace(/[^a-z0-9\s]/g, '')
-            .trim();
-
-        let response = knowledgeBase["default"];
-        
-        // Busca por palavras-chave na base de conhecimento
-        for (const [key, value] of Object.entries(knowledgeBase)) {
-            if (key !== "default" && normalizedMessage.includes(key)) {
-                response = value;
-                break;
+            // Verifica se é erro de conexão
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                addMessage('bot', '🔌 Não foi possível conectar ao servidor do chatbot. Verifique se o backend está rodando ou se a URL da API está correta.');
+            } else {
+                addMessage('bot', '⚠️ Ocorreu um erro inesperado. Tente novamente mais tarde.');
             }
+            
+            console.error('Erro ao conectar com a API:', error);
         }
-        
-        // Adiciona uma pequena variação para simular processamento
-        setTimeout(() => {
-            addMessage(response, 'bot');
-        }, 500);
     }
     
     // Função para adicionar mensagem ao chat
-    function addMessage(message, sender, isLoading = false) {
+    function addMessage(sender, message, isLoading = false) {
         const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', sender);
+        messageDiv.className = `message ${sender}-message${isLoading ? ' loading' : ''}`;
         
         if (isLoading) {
-            messageDiv.classList.add('loading');
             messageDiv.innerHTML = `
-                <div class="loading-dots">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                <div class="loading-indicator">
+                    <span class="dot"></span>
+                    <span class="dot"></span>
+                    <span class="dot"></span>
                 </div>
-                <span class="loading-text">${message}</span>
+                <span>${message}</span>
             `;
         } else {
             messageDiv.textContent = message;
@@ -190,7 +115,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Função para remover mensagem de carregamento
     function removeLoadingMessage() {
-        const loadingMessage = chatMessages.querySelector('.message.loading');
+        const loadingMessage = chatMessages.querySelector('.loading');
         if (loadingMessage) {
             loadingMessage.remove();
         }
@@ -200,7 +125,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function sendMessage() {
         const message = chatInput.value.trim();
         if (message) {
-            addMessage(message, 'user');
+            // Adiciona mensagem do usuário
+            addMessage('user', message);
+            
+            // Limpa o campo de entrada
             chatInput.value = '';
             
             // Processa a entrada e gera resposta
@@ -227,14 +155,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Minimizar/maximizar chatbot
     if (minimizeChat) {
         minimizeChat.addEventListener('click', function() {
-            chatbotBody.style.display = chatbotBody.style.display === 'none' ? 'block' : 'none';
+            if (chatbotBody) {
+                chatbotBody.style.display = chatbotBody.style.display === 'none' ? 'block' : 'none';
+                minimizeChat.textContent = chatbotBody.style.display === 'none' ? '▲' : '▼';
+            }
         });
     }
     
     // Abrir chat no mobile
     if (openChatMobile) {
         openChatMobile.addEventListener('click', function() {
-            chatbotBody.style.display = 'block';
+            const chatbot = document.getElementById('chatbot');
+            if (chatbot) {
+                chatbot.style.display = 'block';
+            }
         });
     }
     
@@ -243,15 +177,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Função para carregar simulação específica
     function loadSimulation(type) {
         if (phetIframe && circuitParams[type]) {
-            const newUrl = phetBaseUrl + circuitParams[type];
-            phetIframe.src = newUrl;
+            const url = phetBaseUrl + circuitParams[type];
+            phetIframe.src = url;
             
-            // Atualiza o seletor de tipo de circuito
-            if (circuitType) {
-                circuitType.value = type;
-            }
-            
-            // Atualiza as instruções
+            // Atualiza as instruções baseadas no tipo de circuito
             updateInstructions(type);
         }
     }
@@ -273,14 +202,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 "Adicione resistores conectando-os em ramificações separadas",
                 "Use o voltímetro para verificar que a tensão é a mesma em todos os resistores",
                 "Use o amperímetro para medir a corrente em cada ramo",
-                "Observe como a corrente se divide entre os ramos"
+                "Observe como a corrente se divide entre os resistores"
             ],
             misto: [
                 "Arraste uma fonte de tensão CA para a área de trabalho",
-                "Crie uma combinação de elementos em série e paralelo",
-                "Identifique as seções em série e paralelo do circuito",
-                "Meça tensões e correntes em diferentes pontos",
-                "Analise como as leis de série e paralelo se aplicam em cada seção"
+                "Crie uma combinação de resistores em série e paralelo",
+                "Identifique as partes em série e as partes em paralelo",
+                "Use voltímetros e amperímetros para medir tensões e correntes",
+                "Compare os resultados com os cálculos teóricos"
             ]
         };
         
@@ -307,33 +236,87 @@ document.addEventListener('DOMContentLoaded', function() {
         loadMistoBtn.addEventListener('click', () => loadSimulation('misto'));
     }
     
-    // Event listener para mudança no seletor de tipo de circuito
+    // Mudança no seletor de tipo de circuito
     if (circuitType) {
         circuitType.addEventListener('change', function() {
-            loadSimulation(this.value);
+            const selectedType = this.value;
+            if (selectedType && selectedType !== 'default') {
+                loadSimulation(selectedType);
+            }
         });
     }
     
-    // ===== Funcionalidades de Navegação =====
+    // ===== Funcionalidades de Realidade Aumentada =====
     
-    // Configura as instruções iniciais
-    updateInstructions('serie');
-    
-    // Smooth scrolling para links internos
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function(e) {
+    // Placeholder para funcionalidades de RA
+    if (raButton) {
+        raButton.addEventListener('click', function(e) {
             e.preventDefault();
-            
-            const targetId = this.getAttribute('href');
-            const targetElement = document.querySelector(targetId);
-            
-            if (targetElement) {
-                window.scrollTo({
-                    top: targetElement.offsetTop - 70, // Ajuste para o navbar fixo
-                    behavior: 'smooth'
-                });
+            alert('Funcionalidade de Realidade Aumentada em desenvolvimento. Em breve, você poderá visualizar circuitos em 3D usando seu smartphone!');
+        });
+    }
+    
+    // ===== Inicialização =====
+    
+    // Mensagem de boas-vindas do chatbot
+    setTimeout(() => {
+        addMessage('bot', '🤖 Olá! Sou o CircuitosEdu Assistente, conectado ao ChatGPT da OpenAI. Estou especializado em circuitos de corrente alternada (CA), motores trifásicos, transformadores e automação industrial. Como posso ajudar você hoje?');
+    }, 1000);
+    
+    // Carrega simulação padrão (série)
+    loadSimulation('serie');
+    
+    // ===== Funções Auxiliares =====
+    
+    // Função para verificar se a API está disponível
+    async function checkAPIHealth() {
+        try {
+            const response = await fetch(`${API_BASE_URL}/health`);
+            if (response.ok) {
+                console.log('API do chatbot está funcionando!');
+                return true;
+            }
+        } catch (error) {
+            console.warn('API do chatbot não está disponível:', error);
+            return false;
+        }
+    }
+    
+    // Verifica a saúde da API na inicialização
+    checkAPIHealth();
+    
+    // ===== Responsividade =====
+    
+    // Ajusta o chatbot para dispositivos móveis
+    function adjustForMobile() {
+        const chatbot = document.getElementById('chatbot');
+        if (window.innerWidth <= 768 && chatbot) {
+            chatbot.style.position = 'fixed';
+            chatbot.style.bottom = '10px';
+            chatbot.style.right = '10px';
+            chatbot.style.width = '90%';
+            chatbot.style.maxWidth = '350px';
+        }
+    }
+    
+    // Ajusta na inicialização e quando a janela é redimensionada
+    adjustForMobile();
+    window.addEventListener('resize', adjustForMobile);
+    
+    // ===== Acessibilidade =====
+    
+    // Adiciona suporte a navegação por teclado
+    document.querySelectorAll('button, a, input, select').forEach(element => {
+        element.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                if (this.tagName !== 'INPUT' && this.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                    this.click();
+                }
             }
         });
     });
+    
+    console.log('CircuitosEdu - ChatGPT OpenAI Integrado carregado com sucesso!');
 });
 
