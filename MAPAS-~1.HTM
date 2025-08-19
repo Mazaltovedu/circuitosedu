@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapas Conceituais - CircuitosEdu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <i class="fas fa-bolt text-primary"></i> CircuitosEdu
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#inicio">Início</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#simulacoes">Simulações</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#material">Material Teórico</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="quizzes.html">Quizzes</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#mapas-conceituais">Mapas Conceituais</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#sobre">Sobre o Projeto</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#recursos-ra">Recursos RA</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <section id="mapas-conceituais" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Mapas Conceituais</h2>
+            <p class="text-center mb-5">Explore os conceitos de circuitos elétricos através de mapas visuais interativos.</p>
+            
+            <div class="row">
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Mapa Conceitual: Circuitos CA Básicos</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div id="mapa-ca-basico" class="mb-3"></div>
+                            <p>Um mapa visual interativo que aborda os conceitos fundamentais de corrente alternada, tensão, frequência e impedância.</p>
+                            <small class="text-muted">Clique nos conceitos para mais informações</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Mapa Conceitual: Componentes Passivos em CA</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div id="mapa-componentes-passivos" class="mb-3"></div>
+                            <p>Explore as características e o comportamento de resistores, indutores e capacitores em circuitos de corrente alternada.</p>
+                            <small class="text-muted">Clique nos conceitos para mais informações</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="alert alert-info mt-5">
+                <i class="fas fa-info-circle me-2"></i> Mais mapas conceituais interativos serão adicionados em breve!
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/mapas-conceituais.js"></script>
+</body>
+</html>
+
