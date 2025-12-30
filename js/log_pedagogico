@@ -1,0 +1,30 @@
+// js/log_pedagogico.js
+
+/**
+ * Função de Triangulação de Dados: Registra o comportamento do aluno (Logs do Vercel)
+ * para ser cruzado com os dados do Plickers e as Entrevistas (Triangulação de Dados).
+ */
+function logPedagogico(evento, topico, detalhe) {
+  // ATENÇÃO: Substitua pela URL real do seu endpoint de logs (Serverless)
+  const LOG_API_URL = 'https://sua-api-de-logs.com/api/logs'; 
+  
+  const logData = {
+    // ID de usuário: Essencial para cruzar o log de navegação com o resultado do Plickers.
+    estudanteId: localStorage.getItem('circuitosedu_user_id' ) || 'anonimo', 
+    timestamp: new Date().toISOString(),
+    evento: evento, // Ex: 'uso_RA', 'erro_quiz', 'consulta_IA'
+    topico: topico, // Ex: 'Impedancia_RLC', 'Leis_Ohm_CC'
+    detalhes: detalhe
+  };
+
+  // Envio assíncrono para o backend (Serverless)
+  fetch(LOG_API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(logData),
+  }).catch(error => {
+    console.error('Erro de rede ao enviar log pedagógico:', error);
+  });
+}
