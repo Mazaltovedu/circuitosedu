@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/api/chat", "destination": "api/chat.py" }
+  ],
+  "functions": {
+    "api/chat.py": {
+      "runtime": "vercel-python@0.1.0"
+    }
+  }
+}
