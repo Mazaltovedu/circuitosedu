@@ -1,13 +1,13 @@
 /**
- * Script Principal - CircuitosEdu
- * Responsável pela interatividade, chatbot Gemini e logs de pesquisa pedagógica.
- * Localização: Manaus-AM
+ * Script Principal - CircuitosEdu (Versão Gemini Integrada)
+ * Localização: Manaus-AM - Pesquisa de Mestrado
  */
 
 document.addEventListener('DOMContentLoaded', function() {
     
-    // ===== CONFIGURAÇÕES GERAIS =====
-    const API_BASE_URL = 'https://circuitosedu.vercel.app/api'; 
+    // ===== CONFIGURAÇÕES =====
+    // ATENÇÃO: Link atualizado para o ambiente "kappa" operacional
+    const API_BASE_URL = 'https://circuitosedu-kappa.vercel.app'; 
     const phetBaseUrl = 'https://phet.colorado.edu/sims/html/circuit-construction-kit-ac/latest/circuit-construction-kit-ac_all.html';
 
     // ===== ELEMENTOS DO DOM =====
@@ -17,9 +17,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const phetIframe = document.getElementById('phet-iframe');
     const circuitType = document.getElementById('circuit-type');
 
-    // ===== 1. FUNÇÃO DE LOGS PEDAGÓGICOS (Pesquisa de Mestrado) =====
+    // ===== 1. FUNÇÃO DE LOGS (Essencial para a tese) =====
     async function logPedagogico(evento, topico, detalhe) {
         try {
+            // Removido o '/api' pois o seu link kappa já responde na raiz
             await fetch(`${API_BASE_URL}/logs`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -32,11 +33,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 })
             });
         } catch (e) { 
-            console.warn("Log off-line (Servidor Vercel pode estar em standby):", e); 
+            console.warn("Log off-line:", e); 
         }
     }
 
-    // ===== 2. LÓGICA DO CHATBOT (Integração Gemini) =====
+    // ===== 2. LÓGICA DO CHATBOT =====
     function addMessage(sender, text, isLoading = false) {
         const messageDiv = document.createElement('div');
         messageDiv.className = `message ${sender}-message${isLoading ? ' loading' : ''}`;
@@ -56,67 +57,48 @@ document.addEventListener('DOMContentLoaded', function() {
         const message = chatInput.value.trim();
         if (!message) return;
 
-        // Interface: Adiciona pergunta do usuário
         addMessage('user', message);
         chatInput.value = '';
         
-        // Log: Registra a interação para a pesquisa
+        // Registra a pergunta no log pedagógico
         logPedagogico('consulta_IA', 'Chat_CA', { pergunta: message });
 
-        // Interface: Mostra indicador de carregamento
         addMessage('bot', '', true);
 
         try {
+            // Removido o '/api' para alinhar com o retorno do seu link kappa
             const response = await fetch(`${API_BASE_URL}/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ message: message })
             });
 
-            // Remove o indicador de carregamento
             const loadingMsg = document.getElementById('temp-loading');
             if (loadingMsg) loadingMsg.remove();
 
             if (response.ok) {
                 const data = await response.json();
-                // 'data.reply' é o campo definido no seu chat.py do Gemini
+                // 'data.reply' é o campo que você configurou no chat.py
                 addMessage('bot', data.reply); 
             } else {
-                throw new Error('Falha na resposta do servidor');
+                throw new Error();
             }
         } catch (error) {
             const loadingMsg = document.getElementById('temp-loading');
             if (loadingMsg) loadingMsg.remove();
-            addMessage('bot', '🔌 Erro de conexão: O tutor está temporariamente indisponível na Vercel.');
-            console.error('Erro na API:', error);
+            addMessage('bot', '🔌 Erro de conexão com o servidor da Vercel.');
         }
     }
 
-    // ===== 3. INTEGRAÇÃO COM SIMULAÇÕES PHET =====
-    function loadSimulation(type) {
-        if (phetIframe) {
-            phetIframe.src = `${phetBaseUrl}?locale=pt`;
-            logPedagogico('troca_simulacao', 'PHET', { tipo: type });
-        }
-    }
-
-    // ===== EVENT LISTENERS =====
+    // ===== 3. EVENT LISTENERS =====
     if (sendMessageBtn) sendMessageBtn.addEventListener('click', sendMessage);
-    
     if (chatInput) {
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
     }
 
-    if (circuitType) {
-        circuitType.addEventListener('change', (e) => loadSimulation(e.target.value));
-    }
-
-    // Registro de início de sessão
     window.onload = () => {
-        logPedagogico('inicio_sessao', 'Acesso_Plataforma', { origem: 'Plickers_Diagnostico' });
+        logPedagogico('inicio_sessao', 'Acesso_Plataforma', { origem: 'Navegador' });
     };
-
-    console.log('CircuitosEdu - Script Unificado (Gemini + Logs) carregado.');
 });
