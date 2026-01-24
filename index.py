@@ -1,48 +1,33 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import requests
-import os
-
-app = Flask(__name__)
-CORS(app)
-
 def get_gemini_response(user_input):
-    # .strip() remove espaços invisíveis que causam erro 400/404
+    # .strip() garante que não existam aspas ou espaços na chave
     api_key = os.environ.get('GEMINI_API_KEY', '').strip()
     if not api_key:
-        return "Erro: GEMINI_API_KEY não configurada na Vercel."
+        return "Erro: Chave API não configurada na Vercel."
 
-    # Usando a URL estável v1beta para evitar erros de versão
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    # URL atualizada para a versão estável v1
+    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
     
-    # Estrutura mínima obrigatória
     payload = {
         "contents": [{
-            "parts": [{"text": f"Responda como tutor de circuitos elétricos: {user_input}"}]
+            "parts": [{"text": f"Você é o tutor do CircuitosEdu. Explique de forma simples: {user_input}"}]
         }]
     }
     
+    headers = {'Content-Type': 'application/json'}
+    
     try:
-        response = requests.post(url, json=payload, timeout=15)
+        response = requests.post(url, json=payload, headers=headers, timeout=15)
         
-        # Se der erro 400 ou 404, retornamos o erro real da Google para você ver
+        # Se retornar 404 ou 400, agora o erro será amigável
         if response.status_code != 200:
-            return f"Erro Google ({response.status_code}): {response.text}"
+            return f"Erro na conexão com o Google ({response.status_code}). Verifique se o modelo está disponível na sua região."
             
         result = response.json()
-        return result['candidates'][0]['content']['parts'][0]['text']
+        
+        # Extração segura da resposta
+        if 'candidates' in result and result['candidates']:
+            return result['candidates'][0]['content']['parts'][0]['text']
+        
+        return "O tutor recebeu a dúvida, mas o motor de IA não gerou texto."
     except Exception as e:
-        return f"Erro de conexão: {str(e)}"
-
-@app.route('/api/chat', methods=['POST', 'GET'])
-def chat():
-    if request.method == 'GET':
-        return jsonify({"status": "online"}), 200
-    
-    data = request.get_json()
-    msg = data.get('message', '')
-    resposta = get_gemini_response(msg)
-    return jsonify({"reply": resposta}), 200
-
-# Necessário para Vercel não dar erro de "Missing variable"
-app = app
+        return f"Erro técnico: {str(e)}"
