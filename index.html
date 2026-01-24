@@ -1,18 +1,15 @@
 <script>
-    // 1. URL Completa do seu Backend Kappa operacional
     window.CHATBOT_API_URL = 'https://circuitosedu-kappa.vercel.app/api/chat';
 
-    // 2. Garantir que o HTML carregou antes de buscar os botões
     document.addEventListener('DOMContentLoaded', function() {
-        
+        // Captura os elementos com os IDs exatos
         const sendBtn = document.getElementById('send-message');
         const inputField = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
 
         // Função para adicionar mensagens na tela
         function addMessage(sender, text) {
-            const chatMessages = document.getElementById('chat-messages');
             if (!chatMessages) return;
-
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
             messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
@@ -20,7 +17,6 @@
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
-        // Função principal de envio
         async function sendMessage() {
             const message = inputField.value.trim();
             if (!message) return;
@@ -37,26 +33,27 @@
 
                 const data = await response.json();
                 
-                // 'data.reply' é o campo que você configurou no index.py
                 if (data.reply) {
                     addMessage('bot', data.reply);
                 } else {
-                    throw new Error();
+                    addMessage('bot', '🔌 O tutor recebeu a mensagem, mas não enviou resposta.');
                 }
             } catch (error) {
-                addMessage('bot', '🔌 Erro: Não foi possível conectar ao assistente na Vercel.');
-                console.error("Erro na requisição:", error);
+                addMessage('bot', '🔌 Erro de conexão. Verifique se a Vercel está online.');
+                console.error("Erro técnico:", error);
             }
         }
 
-        // 3. Só adiciona os eventos se os botões existirem (evita o erro null)
+        // VERIFICAÇÃO FINAL
         if (sendBtn && inputField) {
-            sendBtn.addEventListener('click', sendMessage);
-            inputField.addEventListener('keypress', (e) => {
+            sendBtn.onclick = sendMessage; // Usando onclick para garantir compatibilidade
+            inputField.onkeypress = (e) => {
                 if (e.key === 'Enter') sendMessage();
-            });
+            };
+            console.log("✅ CircuitosEdu: Interface conectada com sucesso!");
         } else {
-            console.error("IDs 'send-message' ou 'chat-input' não encontrados no HTML.");
+            // Se cair aqui, é porque os IDs no HTML estão errados
+            console.error("❌ ERRO: IDs 'send-message' ou 'chat-input' NÃO encontrados no HTML.");
         }
     });
 </script>
