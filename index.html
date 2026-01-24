@@ -1,48 +1,62 @@
-<!-- Localize a linha 22 e as tags de script no final do arquivo -->
 <script>
-    // URL corrigida para apontar para o seu backend na Vercel
-    window.CHATBOT_API_URL = '/api/chat';
+    // 1. URL Completa do seu Backend Kappa operacional
+    window.CHATBOT_API_URL = 'https://circuitosedu-kappa.vercel.app/api/chat';
 
-    // Função para adicionar mensagens na tela
-    function addMessage(sender, text) {
-        const chatMessages = document.getElementById('chat-messages');
-        const messageDiv = document.createElement('div');
-        messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
-        messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
-        chatMessages.appendChild(messageDiv);
-        chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
+    // 2. Garantir que o HTML carregou antes de buscar os botões
+    document.addEventListener('DOMContentLoaded', function() {
+        
+        const sendBtn = document.getElementById('send-message');
+        const inputField = document.getElementById('chat-input');
 
-    // Função principal de envio
-    async function sendMessage() {
-        const input = document.getElementById('chat-input');
-        const message = input.value.trim();
-        if (!message) return;
+        // Função para adicionar mensagens na tela
+        function addMessage(sender, text) {
+            const chatMessages = document.getElementById('chat-messages');
+            if (!chatMessages) return;
 
-        addMessage('user', message);
-        input.value = '';
-
-        try {
-            const response = await fetch(window.CHATBOT_API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message: message })
-            });
-
-            const data = await response.json();
-            if (data.reply) {
-                addMessage('bot', data.reply);
-            } else {
-                throw new Error();
-            }
-        } catch (error) {
-            addMessage('bot', '🔌 Erro: Não foi possível conectar ao assistente. Verifique o backend na Vercel.');
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message', sender === 'user' ? 'user-message' : 'bot-message');
+            messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
         }
-    }
 
-    // Evento do botão e tecla Enter
-    document.getElementById('send-message').addEventListener('click', sendMessage);
-    document.getElementById('chat-input').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') sendMessage();
+        // Função principal de envio
+        async function sendMessage() {
+            const message = inputField.value.trim();
+            if (!message) return;
+
+            addMessage('user', message);
+            inputField.value = '';
+
+            try {
+                const response = await fetch(window.CHATBOT_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                
+                // 'data.reply' é o campo que você configurou no index.py
+                if (data.reply) {
+                    addMessage('bot', data.reply);
+                } else {
+                    throw new Error();
+                }
+            } catch (error) {
+                addMessage('bot', '🔌 Erro: Não foi possível conectar ao assistente na Vercel.');
+                console.error("Erro na requisição:", error);
+            }
+        }
+
+        // 3. Só adiciona os eventos se os botões existirem (evita o erro null)
+        if (sendBtn && inputField) {
+            sendBtn.addEventListener('click', sendMessage);
+            inputField.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') sendMessage();
+            });
+        } else {
+            console.error("IDs 'send-message' ou 'chat-input' não encontrados no HTML.");
+        }
     });
 </script>
