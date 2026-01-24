@@ -1,10 +1,16 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // URL Kappa operacional que você validou
     const API_BASE_URL = 'https://circuitosedu-kappa.vercel.app'; 
 
+    // Captura os elementos
     const chatInput = document.getElementById('chat-input');
     const sendMessageBtn = document.getElementById('send-message');
     const chatMessages = document.getElementById('chat-messages');
+
+    // VERIFICAÇÃO DE SEGURANÇA: Só prossegue se os elementos existirem
+    if (!chatInput || !sendMessageBtn || !chatMessages) {
+        console.error("Erro: Um ou mais elementos do chat (input, botão ou mensagens) não foram encontrados no HTML. Verifique os IDs!");
+        return; 
+    }
 
     async function sendMessage() {
         const message = chatInput.value.trim();
@@ -12,12 +18,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
         addMessage('user', message);
         chatInput.value = '';
-        
-        // Adiciona indicador visual de carregamento
-        addMessage('bot', '<em>O tutor está analisando o circuito...</em>', true);
+        addMessage('bot', '<em>Analisando...</em>', true);
 
         try {
-            // Chama a rota /api/chat que está dentro do seu index.py
             const response = await fetch(`${API_BASE_URL}/api/chat`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -29,16 +32,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (response.ok) {
                 const data = await response.json();
-                // Exibe a resposta do Gemini (campo 'reply')
                 addMessage('bot', data.reply); 
             } else {
-                addMessage('bot', '❌ O servidor encontrou um problema. Verifique os logs na Vercel.');
+                addMessage('bot', '🔌 Erro no servidor da Vercel.');
             }
         } catch (error) {
             const loadingMsg = document.getElementById('temp-loading');
             if (loadingMsg) loadingMsg.remove();
-            addMessage('bot', '🔌 Erro de conexão. Certifique-se de que a API na Vercel está online.');
-            console.error('Erro:', error);
+            addMessage('bot', '🔌 Erro de conexão.');
         }
     }
 
@@ -51,8 +52,10 @@ document.addEventListener('DOMContentLoaded', function() {
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    if (sendMessageBtn) sendMessageBtn.addEventListener('click', sendMessage);
-    if (chatInput) {
-        chatInput.addEventListener('keypress', (e) => { if (e.key === 'Enter') sendMessage(); });
-    }
+    // Só adiciona o evento se o botão existir (evita o erro que apareceu no console)
+    sendMessageBtn.addEventListener('click', sendMessage);
+    
+    chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
 });
