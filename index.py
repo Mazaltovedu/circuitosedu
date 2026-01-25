@@ -4,26 +4,26 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-# Liberação ampla de CORS para ambiente de testes e mestrado
+# Liberação total de CORS para garantir a comunicação entre domínios
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.after_request
 def add_cors_headers(response):
-    """Garante que o navegador aceite a resposta vinda da Vercel"""
+    """Injeta manualmente os cabeçalhos de segurança em cada resposta"""
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
     response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
     return response
 
 def get_gemini_response(user_input):
-    """Conexão blindada com o Google Gemini v1"""
-    # .strip() remove qualquer caractere invisível da chave
+    """Conecta com o motor Gemini v1 (Estável)"""
+    # .strip() remove espaços ou aspas invisíveis que causam erro 400
     api_key = os.environ.get('GEMINI_API_KEY', '').strip().replace('"', '').replace("'", "")
     
     if not api_key:
-        return "Erro: GEMINI_API_KEY não configurada na Vercel."
+        return "Erro: Chave API não configurada na Vercel."
 
-    # URL estável v1 (resolve o erro 404 da v1beta das suas imagens)
+    # URL estável v1 para evitar erro 404 (model not found)
     url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
     
     payload = {
@@ -61,5 +61,5 @@ def chat():
 def home(path):
     return jsonify({"status": "online", "message": "Backend CircuitosEdu Operacional"}), 200
 
-# Exportação obrigatória para a Vercel
+# Exportação obrigatória para a Vercel localizar o ponto de entrada
 app = app
