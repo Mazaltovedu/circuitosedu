@@ -3,27 +3,27 @@ import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-# 1. Configuração do Servidor e Permissões
 app = Flask(__name__)
-# Liberação total de CORS para garantir a comunicação com o GitHub
+# Liberação ampla de CORS para ambiente de testes e mestrado
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.after_request
 def add_cors_headers(response):
-    """Adiciona manualmente os cabeçalhos de permissão em cada resposta"""
+    """Garante que o navegador aceite a resposta vinda da Vercel"""
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
     response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
     return response
 
 def get_gemini_response(user_input):
-    """Conexão com a API do Google Gemini v1"""
+    """Conexão blindada com o Google Gemini v1"""
+    # .strip() remove qualquer caractere invisível da chave
     api_key = os.environ.get('GEMINI_API_KEY', '').strip().replace('"', '').replace("'", "")
     
     if not api_key:
-        return "Erro: GEMINI_API_KEY não configurada no painel da Vercel."
+        return "Erro: GEMINI_API_KEY não configurada na Vercel."
 
-    # URL na versão v1 para evitar o erro 'model not found'
+    # URL estável v1 (resolve o erro 404 da v1beta das suas imagens)
     url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
     
     payload = {
@@ -42,7 +42,7 @@ def get_gemini_response(user_input):
 
 @app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
-    """Endpoint principal com suporte a preflight (OPTIONS)"""
+    """Endpoint principal com suporte a preflight"""
     if request.method == 'OPTIONS':
         return jsonify({"status": "ok"}), 200
         
@@ -61,5 +61,5 @@ def chat():
 def home(path):
     return jsonify({"status": "online", "message": "Backend CircuitosEdu Operacional"}), 200
 
-# Exportação para a Vercel
+# Exportação obrigatória para a Vercel
 app = app
