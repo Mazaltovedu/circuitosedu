@@ -4,20 +4,29 @@
     <meta charset="UTF-8">
     <title>CircuitosEdu - Produto de Mestrado</title>
     <style>
-        /* Estilo para o site não sumir atrás do chat */
-        body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
-        .aula-content { max-width: 800px; margin: auto; }
-        #chat-widget { position: fixed; bottom: 20px; right: 20px; z-index: 9999; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; display: flex; }
+        nav { width: 250px; background: #2c3e50; color: white; height: 100vh; padding: 20px; }
+        main { flex: 1; padding: 40px; background: #f4f7f6; }
+        #chat-widget { position: fixed; bottom: 20px; right: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 25px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
-    <div class="aula-content">
-        <h1>Mestrado: Tecnologia Educacional em Circuitos CA</h1>
-        <p>Bem-vindo ao conteúdo sobre Indutores e Capacitores...</p>
-        </div>
+    <nav>
+        <h2>Aulas</h2>
+        <ul>
+            <li>Introdução à CA</li>
+            <li>Indutores</li>
+            <li>Capacitores</li>
+            <li>Impedância</li>
+        </ul>
+    </nav>
+    <main>
+        <h1>Bem-vindo ao CircuitosEdu</h1>
+        <p>Aqui você encontrará o conteúdo completo do mestrado sobre tecnologia educacional aplicada a circuitos elétricos.</p>
+        </main>
 
     <div id="chat-widget">
-        <iframe src="assistente.html" width="350" height="500" style="border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);"></iframe>
+        <iframe src="assistente.html" width="350" height="500" style="border:none;"></iframe>
     </div>
 </body>
 </html>
