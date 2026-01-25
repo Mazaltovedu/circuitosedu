@@ -15,7 +15,7 @@ def add_cors_headers(response):
 
 def get_openai_response(user_input):
     api_key = os.environ.get('OPENAI_API_KEY', '').strip()
-    if not api_key: return "Erro: Chave OpenAI não configurada."
+    if not api_key: return "Erro: Chave não configurada na Vercel."
 
     url = "https://api.openai.com/v1/chat/completions"
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
@@ -29,7 +29,7 @@ def get_openai_response(user_input):
     try:
         response = requests.post(url, json=payload, headers=headers, timeout=20)
         return response.json()['choices'][0]['message']['content']
-    except: return "Erro de conexão com a IA."
+    except: return "Erro de conexão com o tutor."
 
 @app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
@@ -38,6 +38,6 @@ def chat():
     resposta = get_openai_response(data.get('message', ''))
     return jsonify({"reply": resposta}), 200
 
-@app.route('/status')
-def status():
+@app.route('/')
+def home():
     return jsonify({"status": "online", "engine": "ChatGPT"}), 200
