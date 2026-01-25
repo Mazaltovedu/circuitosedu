@@ -1,13 +1,11 @@
 {
   "version": 2,
   "builds": [
-    {
-      "src": "index.py",
-      "use": "@vercel/python"
-    }
+    { "src": "index.py", "use": "@vercel/python" },
+    { "src": "*.html", "use": "@vercel/static" }
   ],
   "rewrites": [
     { "source": "/api/chat", "destination": "index.py" },
-    { "source": "/(.*)", "destination": "index.py" }
+    { "source": "/(.*)", "destination": "/$1" }
   ]
 }
