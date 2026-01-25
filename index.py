@@ -3,7 +3,7 @@ import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
-# O objeto DEVE se chamar 'app' para o runtime da Vercel
+# A Vercel exige que o objeto se chame 'app'
 app = Flask(__name__)
 CORS(app)
 
@@ -13,10 +13,10 @@ def chat():
         data = request.get_json()
         user_message = data.get('message', '')
         
-        # .strip() remove qualquer aspa ou espaço da chave
+        # .strip() remove espaços ou aspas acidentais da sua chave
         api_key = os.environ.get('GEMINI_API_KEY', '').strip()
         
-        # URL da versão estável v1 (resolve o erro 404 da v1beta)
+        # URL atualizada para v1 (Resolve o erro 404 de 'modelo não encontrado')
         url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
         
         payload = {
@@ -27,9 +27,9 @@ def chat():
         
         response = requests.post(url, json=payload, timeout=15)
         
-        # Se o Google responder 404/400, tratamos aqui
         if response.status_code != 200:
-            return jsonify({"reply": f"Erro na IA (Código {response.status_code}). Verifique a chave API."}), 200
+            # Captura o erro real do Google para facilitar seu diagnóstico
+            return jsonify({"reply": f"Erro na IA ({response.status_code}). Verifique sua chave no painel Vercel."}), 200
             
         result = response.json()
         reply = result['candidates'][0]['content']['parts'][0]['text']
@@ -38,7 +38,8 @@ def chat():
     except Exception as e:
         return jsonify({"reply": f"Erro interno: {str(e)}"}), 500
 
+# Rota padrão para teste de saúde do servidor
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def catch_all(path):
-    return jsonify({"status": "online", "message": "Backend CircuitosEdu Operacional"}), 200
+    return jsonify({"status": "online", "message": "Backend CircuitosEdu Ativo"}), 200
