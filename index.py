@@ -34,7 +34,18 @@ def chat():
     except Exception as e:
         return jsonify({"reply": f"Erro interno: {str(e)}"}), 200
 
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def catch_all(path):
-    return jsonify({"status": "online"}), 200
+@app.route('/api/chat', methods=['POST'])
+def chat():
+    try:
+        data = request.get_json()
+        user_message = data.get('message', '')
+        
+        # Sua lógica de chamada ao Gemini aqui...
+        # Supondo que a resposta da IA esteja na variável 'resposta_texto'
+        
+        # OBRIGATÓRIO: Retornar um JSON com a chave 'reply'
+        return jsonify({"reply": resposta_texto}), 200
+
+    except Exception as e:
+        # Se algo falhar, ainda assim retorne um JSON para o navegador não travar
+        return jsonify({"reply": f"Erro interno: {str(e)}"}), 200
