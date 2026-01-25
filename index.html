@@ -28,5 +28,16 @@
     <div id="chat-widget">
         <iframe src="assistente.html" width="350" height="500" style="border:none;"></iframe>
     </div>
+    <div id="tutor-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+    <iframe 
+        id="tutor-frame"
+        src="assistente.html" 
+        width="350" 
+        height="500" 
+        style="border: 2px solid #2c3e50; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background: white;"
+        onload="console.log('Tutor Virtual carregado com sucesso!');"
+        onerror="alert('Erro ao carregar o assistente. Verifique se o arquivo assistente.html está na raiz.');">
+    </iframe>
+</div>
 </body>
 </html>
