@@ -4,40 +4,186 @@
     <meta charset="UTF-8">
     <title>CircuitosEdu - Produto de Mestrado</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; display: flex; }
-        nav { width: 250px; background: #2c3e50; color: white; height: 100vh; padding: 20px; }
-        main { flex: 1; padding: 40px; background: #f4f7f6; }
-        #chat-widget { position: fixed; bottom: 20px; right: 20px; border-radius: 10px; overflow: hidden; box-shadow: 0 5px 25px rgba(0,0,0,0.2); }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        nav { 
+            width: 250px; 
+            background: #2c3e50; 
+            color: white; 
+            height: 100vh; 
+            padding: 20px; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        nav ul { list-style: none; padding: 0; }
+        nav li { padding: 12px; cursor: pointer; border-radius: 6px; margin: 4px 0; }
+        nav li:hover { background: #34495e; }
+        main { 
+            flex: 1; 
+            padding: 40px; 
+            background: #f4f7f6; 
+            min-height: 100vh;
+        }
+        h1 { color: #2c3e50; }
+        /* Chat Perplexity IA */
+        #chat-perplexity { 
+            position: fixed; 
+            bottom: 20px; 
+            right: 20px; 
+            width: 380px; 
+            height: 500px; 
+            background: white; 
+            border-radius: 15px; 
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3); 
+            z-index: 1000; 
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        #chat-header { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 15px; 
+            text-align: center; 
+            font-weight: bold;
+        }
+        #messages { 
+            height: 350px; 
+            overflow-y: auto; 
+            padding: 15px; 
+            background: #f8f9fa; 
+        }
+        .message { 
+            margin-bottom: 12px; 
+            padding: 10px; 
+            border-radius: 12px; 
+        }
+        .user { background: #007bff; color: white; margin-left: 20%; }
+        .ai { background: white; border: 1px solid #e9ecef; margin-right: 20%; }
+        #chat-input { 
+            display: flex; 
+            padding: 15px; 
+            background: white; 
+            border-top: 1px solid #e9ecef;
+        }
+        #input { 
+            flex: 1; 
+            padding: 12px; 
+            border: 1px solid #ddd; 
+            border-radius: 25px; 
+            outline: none; 
+        }
+        #send { 
+            margin-left: 10px; 
+            padding: 12px 20px; 
+            background: #667eea; 
+            color: white; 
+            border: none; 
+            border-radius: 25px; 
+            cursor: pointer;
+        }
+        #send:hover, #send:active { background: #5a6fd8; }
+        #send:disabled { background: #ccc; cursor: not-allowed; }
     </style>
 </head>
 <body>
+    <!-- MENU LATERAL - MANTER INTACTO -->
     <nav>
-        <h2>Aulas</h2>
+        <h2>📚 Aulas</h2>
         <ul>
-            <li>Introdução à CA</li>
-            <li>Indutores</li>
-            <li>Capacitores</li>
-            <li>Impedância</li>
+            <li>🔌 Introdução à CA</li>
+            <li>🧲 Indutores</li>
+            <li>⚡ Capacitores</li>
+            <li>📊 Impedância</li>
         </ul>
     </nav>
-    <main>
-        <h1>Bem-vindo ao CircuitosEdu</h1>
-        <p>Aqui você encontrará o conteúdo completo do mestrado sobre tecnologia educacional aplicada a circuitos elétricos.</p>
-        </main>
 
-    <div id="chat-widget">
-        <iframe src="assistente.html" width="350" height="500" style="border:none;"></iframe>
+    <!-- CONTEÚDO PRINCIPAL - MANTER INTACTO -->
+    <main>
+        <h1>⚡ Bem-vindo ao CircuitosEdu</h1>
+        <p>Aqui você encontrará o conteúdo completo do mestrado sobre tecnologia educacional aplicada a circuitos elétricos.</p>
+        <!-- Aqui você pode adicionar mais conteúdo das aulas -->
+    </main>
+
+    <!-- NOVO: ASSISTENTE IA PERPLEXITY (SUBSTITUI O IFRAME ANTIGO) -->
+    <div id="chat-perplexity">
+        <div id="chat-header">
+            🤖 Assistente CircuitosEdu<br>
+            <small style="opacity: 0.9;">Powered by Perplexity AI</small>
+        </div>
+        <div id="messages"></div>
+        <div id="chat-input">
+            <input id="input" placeholder="Pergunte sobre circuitos elétricos... (ex: 'O que é impedância?')" />
+            <button id="send">Enviar</button>
+        </div>
     </div>
-    <div id="tutor-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-    <iframe 
-        id="tutor-frame"
-        src="assistente.html" 
-        width="350" 
-        height="500" 
-        style="border: 2px solid #2c3e50; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); background: white;"
-        onload="console.log('Tutor Virtual carregado com sucesso!');"
-        onerror="alert('Erro ao carregar o assistente. Verifique se o arquivo assistente.html está na raiz.');">
-    </iframe>
-</div>
+
+    <script>
+        // CONFIGURAÇÃO DO CHAT PERPLEXITY
+        const input = document.getElementById("input");
+        const messages = document.getElementById("messages");
+        const btn = document.getElementById("send");
+        
+        // AJUSTE AQUI: URL do seu backend Vercel
+        const API_URL = "https://circuitosedu-backend.vercel.app/api/perplexity-chat"; // ← MUDE PARA SEU BACKEND
+
+        function addMessage(author, text, isUser = false) {
+            const div = document.createElement("div");
+            div.className = `message ${isUser ? 'user' : 'ai'}`;
+            div.innerHTML = `<strong>${author}:</strong> ${text}`;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Mensagem de boas-vindas
+        addMessage("Assistente", "Olá! Sou o assistente IA do CircuitosEdu. Pergunte sobre circuitos elétricos, CA, indutores, capacitores ou impedância. 😊");
+
+        async function sendMessage() {
+            const text = input.value.trim();
+            if (!text) return;
+            
+            addMessage("Você", text, true);
+            input.value = "";
+            btn.textContent = "Enviando...";
+            btn.disabled = true;
+
+            try {
+                const resp = await fetch(API_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: text }),
+                });
+                const data = await resp.json();
+                
+                if (data.error) {
+                    addMessage("Assistente", `<span style="color:#dc3545;">❌ Erro: ${data.error}</span>`);
+                } else {
+                    addMessage("Assistente", data.reply);
+                }
+            } catch (e) {
+                addMessage("Assistente", "❌ Erro de conexão. Verifique se o backend está ativo na Vercel.");
+                console.error("Erro chat:", e);
+            } finally {
+                btn.textContent = "Enviar";
+                btn.disabled = false;
+                input.focus();
+            }
+        }
+
+        // Eventos
+        btn.addEventListener("click", sendMessage);
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-resize e foco
+        input.focus();
+    </script>
 </body>
 </html>
