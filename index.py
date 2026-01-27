@@ -68,3 +68,4 @@ def home():
     return jsonify({"status": "Tutor Online", "engine": "Gemini Multi-Model"}), 200
 
 app = app
+# Versão final de teste
