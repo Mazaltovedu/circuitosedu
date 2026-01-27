@@ -1,30 +1,70 @@
+import os
+import requests
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+
+app = Flask(__name__)
+# Habilita CORS para o seu domínio no GitHub Pages
+CORS(app, resources={r"/*": {"origins": "*"}})
+
+@app.after_request
+def add_cors_headers(response):
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Headers"] = "Content-Type,Authorization"
+    response.headers["Access-Control-Allow-Methods"] = "GET,POST,OPTIONS"
+    return response
+
 def get_gemini_response(user_input):
-    """Conecta ao Gemini usando o caminho universal para evitar Erro 404"""
+    """Sistema de redundância para evitar Erro 404 do Google"""
     api_key = os.environ.get('GEMINI_API_KEY', '').strip().replace('"', '').replace("'", "")
     
     if not api_key:
         return "Erro: GEMINI_API_KEY não configurada na Vercel."
 
-    # MUDANÇA: Tentando a URL v1beta com o modelo gemini-pro (mais estável para testes)
-    # Se preferir manter o flash, a URL é: v1beta/models/gemini-1.5-flash:generateContent
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    # Lista de modelos para tentar (o código testará um por um se der 404)
+    modelos_para_testar = [
+        "gemini-1.5-flash",
+        "gemini-pro"
+    ]
     
     payload = {
         "contents": [{"parts": [{"text": f"Você é o tutor do CircuitosEdu. Explique: {user_input}"}]}]
     }
-    
-    try:
-        response = requests.post(url, json=payload, timeout=25)
-        
-        # Se o erro 404 persistir, vamos tentar automaticamente o modelo 'gemini-pro'
-        if response.status_code == 404:
-            url_backup = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key={api_key}"
-            response = requests.post(url_backup, json=payload, timeout=25)
 
-        if response.status_code != 200:
-            return f"Erro na IA (Google Status {response.status_code}). Detalhe: {response.text}"
+    for modelo in modelos_para_testar:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{modelo}:generateContent?key={api_key}"
+        try:
+            response = requests.post(url, json=payload, timeout=25)
+            # Se funcionar (Status 200), retorna a resposta imediatamente
+            if response.status_code == 200:
+                result = response.json()
+                return result['candidates'][0]['content']['parts'][0]['text']
             
-        result = response.json()
-        return result['candidates'][0]['content']['parts'][0]['text']
+            # Se der 404, o loop continua para o próximo modelo
+            if response.status_code == 404:
+                continue
+                
+            # Se for outro erro (ex: 400), retorna o detalhe técnico
+            return f"Erro na IA (Status {response.status_code}). Detalhe: {response.text}"
+            
+        except Exception as e:
+            return f"Erro técnico de conexão: {str(e)}"
+
+    return "Erro: Nenhum modelo de IA disponível para esta chave no momento (Erro 404 em todos)."
+
+@app.route('/api/chat', methods=['POST', 'OPTIONS'])
+def chat():
+    if request.method == 'OPTIONS':
+        return jsonify({"status": "ok"}), 200
+    try:
+        data = request.get_json()
+        resposta = get_gemini_response(data.get('message', ''))
+        return jsonify({"reply": resposta}), 200
     except Exception as e:
-        return f"Erro técnico: {str(e)}"
+        return jsonify({"reply": f"Erro interno: {str(e)}"}), 500
+
+@app.route('/')
+def home():
+    return jsonify({"status": "Tutor Online", "engine": "Gemini Multi-Model"}), 200
+
+app = app
