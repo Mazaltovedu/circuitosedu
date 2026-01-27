@@ -4,6 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
+# Permissão total para o site no GitHub Pages
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.after_request
@@ -14,38 +15,43 @@ def add_cors_headers(response):
     return response
 
 def get_gemini_response(user_input):
-    # Limpeza rigorosa da chave para evitar o erro 404 das suas fotos
+    """Conecta ao Gemini 1.5 Flash usando a URL v1beta (mais estável)"""
     api_key = os.environ.get('GEMINI_API_KEY', '').strip().replace('"', '').replace("'", "")
     
     if not api_key:
-        return "Erro: Chave não encontrada no sistema da Vercel."
+        return "Erro: GEMINI_API_KEY não foi encontrada na Vercel."
 
-    # URL estável v1 (Garante que o Google encontre o modelo)
-    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
+    # URL v1beta para resolver o erro 404 das suas imagens
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
     
     payload = {
-        "contents": [{"parts": [{"text": f"Você é o tutor do CircuitosEdu. Explique de forma pedagógica: {user_input}"}]}]
+        "contents": [{
+            "parts": [{"text": f"Você é o tutor do CircuitosEdu. Explique de forma pedagógica: {user_input}"}]
+        }]
     }
     
     try:
-        response = requests.post(url, json=payload, timeout=20)
+        response = requests.post(url, json=payload, timeout=25)
         if response.status_code != 200:
-            return f"Erro na IA (Google Status {response.status_code}). Verifique a validade da sua chave."
+            # Se der erro, mostramos o motivo real do Google
+            return f"Erro na IA (Google Status {response.status_code}). Verifique se a chave é válida."
             
         result = response.json()
         return result['candidates'][0]['content']['parts'][0]['text']
     except Exception as e:
-        return f"Erro de conexão: {str(e)}"
+        return f"Erro de conexão técnica: {str(e)}"
 
 @app.route('/api/chat', methods=['POST', 'OPTIONS'])
 def chat():
-    if request.method == 'OPTIONS': return jsonify({"status": "ok"}), 200
+    if request.method == 'OPTIONS':
+        return jsonify({"status": "ok"}), 200
+        
     try:
         data = request.get_json()
         resposta = get_gemini_response(data.get('message', ''))
         return jsonify({"reply": resposta}), 200
     except Exception as e:
-        return jsonify({"reply": f"Erro interno: {str(e)}"}), 500
+        return jsonify({"reply": f"Erro interno no servidor: {str(e)}"}), 500
 
 @app.route('/')
 def home():
