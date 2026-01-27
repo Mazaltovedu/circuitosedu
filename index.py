@@ -4,7 +4,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 
 app = Flask(__name__)
-# Liberação total para o GitHub Pages ler a resposta
+# Permissão total para o seu site no GitHub Pages
 CORS(app, resources={r"/*": {"origins": "*"}})
 
 @app.after_request
@@ -15,15 +15,15 @@ def add_cors_headers(response):
     return response
 
 def get_gemini_response(user_input):
-    """Conexão com Gemini 1.5 Flash - Limpeza de Chave e URL estável"""
-    # Remove aspas ou espaços que o Windows/Navegador às vezes adicionam
+    """Conecta ao Gemini 1.5 Flash com URL estável v1"""
+    # Limpa a chave de qualquer resquício de aspas ou espaços
     api_key = os.environ.get('GEMINI_API_KEY', '').strip().replace('"', '').replace("'", "")
     
     if not api_key:
-        return "Erro: GEMINI_API_KEY não configurada na Vercel."
+        return "Erro: Chave API não configurada na Vercel."
 
-    # URL corrigida para evitar o erro 404 de 'Model not found'
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}"
+    # URL estável v1 para evitar o erro 404 de 'modelo não encontrado'
+    url = f"https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key={api_key}"
     
     payload = {
         "contents": [{"parts": [{"text": f"Você é o tutor do CircuitosEdu. Explique: {user_input}"}]}]
@@ -31,10 +31,9 @@ def get_gemini_response(user_input):
     
     try:
         response = requests.post(url, json=payload, timeout=15)
-        
-        # Se retornar 404 aqui, o problema é a validade da chave no Google
+        # Se o Google responder erro, capturamos o código aqui
         if response.status_code != 200:
-            return f"Erro na IA (Status {response.status_code}). Verifique sua chave no Google AI Studio."
+            return f"Erro na IA (Status {response.status_code}). Verifique a validade da chave."
             
         result = response.json()
         return result['candidates'][0]['content']['parts'][0]['text']
